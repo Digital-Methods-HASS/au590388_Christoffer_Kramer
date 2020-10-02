@@ -1,0 +1,590 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{apacite}
+\usepackage{graphicx}
+\graphicspath{ {./images/} }
+\usepackage{hyperref}
+
+\title{Digital Methods: Learning Journal}
+\author{Christoffer Mondrup Kramer}
+\date{Autumn 2020}
+
+\begin{document}
+
+\maketitle
+\pagebreak{}
+
+%Indholdsfortegnelse
+\tableofcontents
+\pagebreak{}
+
+%Start with R
+\section{02-10-2020: Start with R}
+For this assignment, please submit a page of your journal showing the following solutions:
+\subsection{Part 1: Use R to figure out how many elements in the vector below are greater than 2} 
+\begin{verbatim}
+rooms <- c(1, 2, 1, 3, 1, NA, 3, 1, 3, 2, 
+           1, NA, 1, 8, 3, 1, 4, NA, 1, 3,
+           1, 2, 1, 7, 1, NA)
+\end{verbatim}
+\subsubsection{Steps}
+\begin{itemize}
+    \item \textbf{Action:} I created new project called "assignment\_start\_with\_R". Then I created a folder called "scripts" for keeping track of my scripts. I also created a folder called "data" for keeping track of my data. Lastly, I copy-pasted the code above in to a script called "assignment1\_2".
+    \begin{verbatim}
+        rooms <- c(1, 2, 1, 3, 1, NA, 3, 1, 3, 
+           2, 1, NA, 1, 8, 3, 1, 4, NA, 1, 
+           3, 1, 2, 1, 7, 1, NA)
+    \end{verbatim}
+    \item \textbf{Action:} Then I created a variable, which would be a subvector of "rooms" but excluding all NA's.
+    \begin{verbatim}
+        rooms_NA_removed <- rooms[!is.na(rooms)] 
+    \end{verbatim}
+    "rooms\_NA\_removed" is my new variable. rooms[!is.na(rooms)] shows that I want a subsection of rooms but without NA's. This is done by using the operator ! which means NOT. If I removed the ! I would only get NA's.
+    \item \textbf{Result:} It worked, I now had a new vector without any NA's.
+    \item \textbf{Action:} I then used the logical operator "larger than" to only get a vector containing numbers larger than 2.
+    \begin{verbatim}
+        rooms_NA_removed[rooms_NA_removed > 2]
+    \end{verbatim}
+    This worked since I got the following output:
+    \begin{verbatim}
+     3 3 3 8 3 4 3 7
+    \end{verbatim}
+    Therefore, I just needed to count the length of this output.
+    \item\textbf{Action:} I, therefore, used the function length() with my previous command as the parameter. This should count the length of the list.
+    \begin{verbatim}
+        length(rooms_NA_removed[rooms_NA_removed > 2])
+    \end{verbatim}
+    \item\textbf{Result:} This worked. The result is 8. 
+\end{itemize}
+\subsection{Part 2: What is the result of running median() function on the above 'rooms' vector? (again, best remove the NAs)}
+\begin{itemize}
+    \item \textbf{Action:} Since I already had the variable "rooms\_NA\_removed" without NA's I could just use the median() function with this variable as the parameter:
+    \begin{verbatim}
+        median(rooms_NA_removed)
+    \end{verbatim}
+    \item\textbf{Result:} This worked. The median of the rooms vector is 1.5.
+\end{itemize}
+
+\subsection{Part 3}
+Inside your R Project (.Rproj), install the 'tidyverse' package and use the download.file() and read\_csv() function to read the SAFI\_clean.csv dataset into your R project as 'interviews' digital object.
+Take a screenshot of your RStudio interface showing a) the script you used to create the object b) the 'interviews' object in the Environment and the c) structure of your R project in the bottom right Files pane.
+Save the screenshot as an image and put it in your AUID\_lastname\_firstname repository inside our Github organisation (github.com/Digital-Methods-HASS). Place here the URL leading to the screenshot in your repository.
+
+\begin{itemize}
+    \item \href{https://github.com/Digital-Methods-HASS/au590388_Christoffer_Kramer/tree/master/learning_journal_and_assignments/week_41}{\textbf{Click here for the screenshots of my script, the interview object, and my file structure}}
+\end{itemize}
+
+%Appendix
+\subsection{Appendix}
+\subsubsection {Source code for part 1 and 2}
+\begin{verbatim}
+ #1) Use R to figure out how many elements in the vector below are greater than 2 .
+#(You need to filter out the NAs first)
+
+rooms <- c(1, 2, 1, 3, 1, NA, 3, 1, 3, 
+           2, 1, NA, 1, 8, 3, 1, 4, NA, 1, 
+           3, 1, 2, 1, 7, 1, NA)
+
+#Create variable excluding NA from the vector
+rooms_NA_removed <- rooms[!is.na(rooms)] 
+
+#Extract numbers over 2
+rooms_NA_removed[rooms_NA_removed > 2]
+
+#show the length of previous output
+length(rooms_NA_removed[rooms_NA_removed > 2])
+
+#What is the result of running median() function on the above 'rooms' vector?
+#(again, best remove the NAs)
+median(rooms_NA_removed)
+\end{verbatim}
+
+%Shell
+\section{25-09-2020: Shell}
+Your supervisor has shared a folder of photos on Sciencedata.dk with you (password is 2020CDS, folder is 500Mb and contains 189 images) and needs your help with a couple diagnostics:
+%Part 1 - 3 biggest files
+\subsection{Part 1: Identify the names and format of the 3 biggest files. Can you come up with a command to generate a numerically ordered list of 3 biggest files? (hint: consider using wc to gauge image size)}
+\begin{itemize}
+    \item \textbf{Answer:} The three biggest files, ordered numerically by size, are
+    \begin{itemize}
+        \item "9240\_Overview\_S.RW2" (14.761.472 bytes)
+        \item "9247\_Overview\_SW.RW2" (14.733.312 bytes)
+        \item  "9237\_Overview\_W.RW2" (14.713.856 bytes)
+    \end{itemize} 
+    \subsubsection{Steps}
+    \item \textbf{Action:} I started out by navigating to the HW folder, which is located in my data-shell folder on my desktop
+    \begin{verbatim}
+     cd OneDrive/Skrivebord/data-shell/HW
+    \end{verbatim}
+    cd is the command for moving through the directories. Since my pc is backed up with OneDrive I need to move to my OneDrive folder first, then Dekstop (Skrivebord), then data-shell and lastly HW.
+    \item \textbf{Action:} I then listed what was in the current directory, to see what files it contained:
+    \begin{verbatim}
+     ls
+    \end{verbatim}
+    ls is the command for listing the contents of a directory. Since I'm currently in the HW directory, I do not need to specify the path.
+    \item\textbf{Result:} There where a lot of .jpgs but also some other file-formats.
+    \item\textbf{Action:} I needed to list the file-size. I knew that the wc command could do it, but I couldn't remember what flag to use, so I consulted the manual:
+    \begin{verbatim}
+     wc --help
+    \end{verbatim}
+    \item\textbf{Result:} I figured out, that I could use the -c flag to get the file-sizes.
+    \item \textbf{Action:} I knew that I had to sort it numerically and in reverse. By doing this I could use the head command to get the first three lines:
+    \begin{verbatim}
+     wc -c * | sort -n -r | head -n3
+    \end{verbatim}
+    The asterisk after -c indicates that I want to count the size of everything in this folder. With the second pipe I'm sorting the output from the previous command nummerically and in reverse (the largest numbers appear on top of the list). The last pipe takes the three first lines from the output of the second pipe.
+    \item \textbf{Result:} It almost worked, however, the first line is the combined size of every file. I therefore needed to get the second, third and fourth line of the output, rather than the first, second and third line.
+    \item \textbf{Action:} I changed head -n3 to head n-4 and added another pipe:
+    \begin{verbatim}
+     wc -c * | sort -n -r | head -n4 | tail -n3 
+    \end{verbatim}
+    The last pipe indicates that i want the 3 last lines from the previous output.
+    \item \textbf{Action:} It worked, I now had a list of the three biggest files. Sorted numerically by size. 
+    \end{itemize}
+
+\subsection{Part 2: Some of the image files are empty, a sign of error in the data processing or corruption. Can you find the empty photo files (0 kb size), count them, and generate a list of their filenames to make their later replacement easier?}
+\begin{itemize}
+    \item \textbf{Action:} I knew that I needed to somehow find files according to how big they were. I, therefore, thought that the command "find" would be the best place to start. Since, If I used the answer from part 1, I would have to count zero sized files manually. I used --help to see what flags I could use with find:
+    \begin{verbatim}
+     find --help
+    \end{verbatim}
+    \item \textbf{Result:} It turns out that I can use the flag -size to find files according to their size.
+    \item \textbf{Action:} I used find -size 0 to find all file containing zero bytes. Moreover, I also used the flag -type f to indicate, that I only wanted files (not directories). The last part wasn't that important, but it would make sure, that I only matched files.
+    \begin{verbatim}
+     find -size 0 -type f
+    \end{verbatim}
+    \item \textbf{Result:} It worked. Now I only needed to count the amount of files. I noticed that all files was separated by line-breaks. Therefore, I could just use a pipe containing wc -l to count the number of lines from the previous output:
+    \begin{verbatim}
+     find -size 0 -type f | wc -l
+    \end{verbatim}
+    \item \textbf{Result:} It worked. I had 73 files with 0 bytes. Now I only needed a list for later replacement.  
+    \item \textbf{Action:} Luckily this is easy. I can just use the "larger than" character to make a text-file containing the output:
+    \begin{verbatim}
+     find -size 0 -type f > list_zero_byte_files.txt
+    \end{verbatim}
+    \textbf{Result:} It worked. I now have a file containing all file names with zero bytes called list\_zero\_byte\_files.txt in the HW folder. 
+\end{itemize}
+
+\subsection{Appendix}
+\subsubsection {Source code for part 1 (Copied from my terminal)}
+\begin{verbatim}
+  484  cd OneDrive/Skrivebord/data-shell/HW/
+  485  ls
+  486  wc --help
+  487  wc -c * | sort -n -r | head -n3
+  488  wc -c * | sort -n -r | head -n4 | tail -n3
+  489 history
+\end{verbatim}
+
+\subsubsection{Source code for part 2 (Copied from my terminal)}
+  \begin{verbatim}
+  500  find --help
+  501  find -size 0 -type f
+  502  find -size 0 -type f | wc -l
+  503  find -size 0 -type f > list_zero_byte_files.txt
+  504  history
+
+  \end{verbatim}
+
+%Question 1: Answer the question of: "What are basic principles for using spreadsheets for good data organisation?" (no more than 250 words)
+\section{18-09-2020}
+\subsection{Question 1: What are basic principles for using spreadsheets for good data organisation?}
+\begin{itemize}
+    \item Use consistent names, values and data types \cite[2]{broman}. 
+    \item Be careful with dates, since they are treated as numbers in excel. Data carpentry recommends splitting up day, month and year by different columns \cite{carpentry}.
+    \item All names should be short but meaning-full. White-spaces should be replaced with either camel-Case or underscores \cite[3]{broman}.
+    \item No cells should be left intentionally blank (ibid., 4). If a cell needs to be blank use either NA, na or BLANK as values \cite{carpentry}. This ensures that cells, which are actually missing data, can be properly dealt with.
+    \item Never alter or use calculations in the raw/original data-set \cite[7]{broman}.
+    \item Never use formatting as data. \cite[7-8]{broman}.
+    \item Make back-ups, preferably with version control systems such as git\cite[9]{broman}. 
+    \item Keep track of changes \cite[12]{wilson} Open-Refine is a great tool for this.
+    \item Use Data validation to avoid errors \cite[10]{broman}.
+    \item Have rich and usefull metadata, such as a Data dictionary \cite[6]{broman}.  
+    \item Never have more than one value in a cell \cite[4]{broman}.
+    \item Save the data-set in a non-proprietary format such as .csv \cite{broman, wilson}.
+    \item Every column should be a variable, every row should be an observation and every table should be one observational unit \cite[4]{wickham}. 
+\end{itemize}
+
+%Question 2: Openrefine
+\subsection{Question 2: Does OpenRefine alter the raw data during sorting and filtering?}
+As far as I know, this is not the case. By looking at the "undo/redo" section it does not save sorting and filtering steps. Moreover, by exporting the data file and looking at it, sorting and filtering does not appear in the "history" section of the file.
+
+%Question 3: Fix dataset
+\subsection{Question 3: Fix the interviews data-set in OpenRefine enough to answer this question: "Which two months are reported as the most water-deprived/driest by the interviewed farmer households?"}
+October appears to be the most water-deprived month with 74 mentions, closely followed by September with 70 mentions. 
+
+%Question 4: Explain steps
+\subsection{Question 4: Describe briefly the steps you took to achieve the answer to point 3}
+
+\begin{itemize}
+    \item \textbf{Action:} I started by moving the column to the start of the tabel. That way it would be easier to find the column: 
+    \begin{verbatim}
+    "op": "core/column-reorder",
+    "columnNames": [
+      "months_no_water",
+      "interview_date",
+      "quest_no"
+      "description": "Reorder columns"
+    \end{verbatim}
+    "months no water" was moved in front of the column "interview date". (I have removed most of the columns from this code, in order to improve readability).
+    \item I then removed the brackets, the white-spaces and the quotation marks with the following GREL function:
+    \begin{verbatim}
+    value.replace("String pattern", "Replacement string")
+    \end{verbatim}
+    This resulted in the following GREL code:
+    \begin{verbatim}
+    value.replace("[", "").replace("'", "").replace(" ", "").replace("]", "")
+    \end{verbatim}
+   This code finds to the opening bracket and replaces them with nothing. It then matches the quotation marks and replaces them with nothing. Then it matches the white-spaces and replaces them with nothing. Lastly, it finds the closing brackets and replaces them with nothing. 
+   \item\textbf{Result:} It worked like a charm. Now each month was separated by a semicolon.
+   \item \textbf{Action:} I then created a custom text-facet, I used the following GREL code:
+   \begin{verbatim}
+       value.split(";")
+   \end{verbatim}
+   This code matches each word separated by a semicolon as individual values, rather than the whole cell as one value. 
+   \item\textbf{Result:} It worked! now each month was displayed as a single value. 
+\end{itemize}
+
+\subsection{Final thoughts}
+It actually went quite well. I did not experience any problems. Maybe this data-science thing is not completely impossible.
+
+\subsection{Appendix: script}
+My script copied directly from OpenRefine:
+\begin{verbatim}
+    [
+  {
+    "op": "core/column-reorder",
+    "columnNames": [
+      "months_no_water",
+      "interview_date",
+      "quest_no",
+      "start",
+      "end",
+      "province",
+      "district",
+      "ward",
+      "village",
+      "years_farm",
+      "agr_assoc",
+      "no_membrs",
+      "_members_count",
+      "remittance_money",
+      "years_liv",
+      "parents_liv",
+      "sp_parents_liv",
+      "grand_liv",
+      "sp_grand_liv",
+      "respondent_roof_type",
+      "respondent_wall_type",
+      "respondent_wall_type_other",
+      "respondent_floor_type",
+      "window_type",
+      "buildings_in_compound",
+      "rooms",
+      "other_buildings",
+      "no_plots",
+      "plots_count",
+      "water_use",
+      "no_group_count",
+      "yes_group_count",
+      "no_enough_water",
+      "period_use",
+      "exper_other",
+      "other_meth",
+      "res_change",
+      "memb_assoc",
+      "resp_assoc",
+      "fees_water",
+      "affect_conflicts",
+      "need_money",
+      "money_source",
+      "money_source_other",
+      "crops_contr",
+      "emply_lab",
+      "du_labour",
+      "liv_owned",
+      "liv_owned_other",
+      "liv_count",
+      "poultry",
+      "du_look_aftr_cows",
+      "items_owned",
+      "items_owned_other",
+      "no_meals",
+      "months_lack_food",
+      "no_food_mitigation",
+      "gps_Latitude",
+      "gps_Longitude",
+      "gps_Altitude",
+      "gps_Accuracy",
+      "instanceID"
+    ],
+    "description": "Reorder columns"
+  },
+  {
+    "op": "core/text-transform",
+    "engineConfig": {
+      "facets": [],
+      "mode": "row-based"
+    },
+    "columnName": "months_no_water",
+    "expression": "grel:value.replace(\"[\", \"\").replace(\"'\", \"\").replace(\" \", \"\").replace(\"]\", \"\")",
+    "onError": "keep-original",
+    "repeat": false,
+    "repeatCount": 10,
+    "description": "Text transform on cells in column months_no_water using expression grel:value.replace(\"[\", \"\").replace(\"'\", \"\").replace(\" \", \"\").replace(\"]\", \"\")"
+  },
+  {
+    "op": "core/text-transform",
+    "engineConfig": {
+      "facets": [],
+      "mode": "row-based"
+    },
+    "columnName": "months_no_water",
+    "expression": "grel:value.split(\";\")",
+    "onError": "keep-original",
+    "repeat": false,
+    "repeatCount": 10,
+    "description": "Text transform on cells in column months_no_water using expression grel:value.split(\";\")"
+  }
+]
+\end{verbatim}
+
+%STOP WORD LIST FROM VOYANT TO R
+\section{11-09-2020}
+\subsection{Regex (Regular expressions): Stop-word list from Voyant! to R}
+
+\textbf{9.30}: I'm supposed to make a list with stop-words for Voyant! into a list for R.  The R list contains words which are enclosed in quotation marks and separated by a comma and a white-space. For example: "an", "og". In the Voyant! list, all words are separated by a line-break and nothing else such as:
+\break{}
+Han
+\break{}
+Hun
+\break{}
+Den
+
+\subsection{Actions and Results}
+\begin{itemize}
+
+%FIRST STEP
+\item \textbf{Action:} I started out by trying to just match the words. I did this with the following expression:
+\begin{verbatim}
+^\w+
+\end{verbatim}
+The circumflex indicates that the following expression should appear first in the string. That way I should not match any line-breaks. The  w is used to match any word letter (including 0-9 and underscore). The + indicates that these character should appear one or more times.
+\item \textbf{Result:} This worked partially. However, it didn't match words containing æøå.
+
+%SECOND STEP
+\item\textbf{Action:} I, therefore, needed to account for Danish letters (æ-ø), which I did with the following expression:
+\begin{verbatim}
+    ^[\wæøå]+
+\end{verbatim}
+The square brackets was added to indicate, that I wanted ANY letter inside them. The æøå were added so I could match danish letters. The + was moved outside of the square brackets to indicate, that any of the letters inside of the brackets should appear at least one time.
+\item \textbf{Result:} I thought that this made it possible to match all words in the list. But, it did not take case into account. It did not appear to be a problem in this particular list since all words were written in non-capital letters. However, if another list contained capital letters, it would create problems.
+
+%THIRD STEP
+\item \textbf{Action:} I therefore decided to make the expression case-insensitive. The list did not contain capital letters, so I wrote two test words ("Ælling" and "legoLand") and entered the following regex:
+\begin{verbatim}
+     ^(?i)[\wæøå]+
+\end{verbatim}
+The parenthesis, the ? and the i was something Vojtech taught us yesterday. It makes the rest of the regex case-insensitive. 
+\item \textbf{Result:} Ælling was not being matched. I suspected, that this was because of the letter æ. 
+
+%FOURTH STEP
+\item \textbf{Action:} I read about w and realised that it also includes capital letters from A-Z. Therefore, the problem had to be, that æøå was not being parsed as letters, but as special characters. I, therefore, entered the following regex:
+\begin{verbatim}
+     ^[\wæøåÆØÅ]+
+\end{verbatim}
+I removed the code for case-insensitive, since the w took care of it for the letters A-Z. I then used ÆØÅ and æøå in the regex. This should ensure, that capital ÆØÅ would be matched as well.
+\item \textbf{Result:} While scrolling through the results, I noticed that certain characters, such as apostrophes and periods, were not being matched. 
+
+%FIFTH STEP
+\item \textbf{Action:} I needed to account for more special characters, so I added a period to the regex inside of the brackets. This should ensure, that I would also match special characters except for white-spaces and line-breaks:
+\begin{verbatim}
+     ^[\wæøåÆØÅ.]+
+\end{verbatim}
+\item \textbf{Result:} This did not work. Nothing changed.
+
+%SIXTH STEP
+\item \textbf{Action:} I read about the period, and apparently it will literally only match periods, when it is in square brackets. So I moved it outside the brackets.
+\begin{verbatim}
+     ^[\wæøåÆØÅ].+
+\end{verbatim}
+\item \textbf{Result:} It actually kinda worked. But now the regex were not matching digits: 
+
+%SEVENTH STEP
+\item \textbf{Action:} I realised that the + needs to be after the square brackets, and that the period needs to be optional. If the + is after the period it means, that the pattern needs to contain one or more letter characters (A-Z, a-z, 0-9 and underscore) or ÆØÅ or æøå AND one or more of any character except for white-space and line-breaks. In short, it meant that all matches needed to contain at least two characters. That is why I were not matching digits with one character. Therefore, the period needed to be optional. I, therefore, typed in: 
+\begin{verbatim}
+     ^[\wæøåÆØÅ]+.?
+\end{verbatim}
+The ? indicates that any character after the brackets is optional. 
+\item \textbf{Result:} It did not work. I were only matching the first special character in these words.
+
+%EIGTH STEP
+\item \textbf{Action}: I read about the ? and apparently it means between zero and one time. I, therefore, needed to use the asterisk: 
+\begin{verbatim}
+     ^[\wæøåÆØÅ]+.*
+\end{verbatim}
+The asterisk means that any character after the square brackets will be matched if it is used between zero and unlimited times (effectively it means that these characters are optional).  
+\item \textbf{Result:} It worked. But maybe I should include it at the begging as well. That way I can match words which starts with a special character. 
+
+%NINTH STEP
+\item \textbf{Action}: I added .* after the circumflex.
+\begin{verbatim}
+     ^.*[\wæøåÆØÅ]+.*
+\end{verbatim}
+I tested this expression by writing YOLO with a hashtag in front of it.
+\item \textbf{Result:} It worked, I got a match.
+
+%TENTH STEP
+\item \textbf{Action:} Now I needed to substitute the line-breaks. Therefore, I made a group, so I could create variables:
+\begin{verbatim}
+     (^.*[\wæøåÆØÅ]+.*)
+\end{verbatim}
+The parenthesis indicates, that this is a group, which can be used later. I tried to put quotation marks around the variable and follow it with a comma and a white-space:
+\begin{verbatim}
+     "$1", 
+\end{verbatim}
+\item \textbf{Result:} This worked partially, but it did not remove the line-break:
+
+%ELEVENTH STEP
+\item \textbf{Action:} I tried to use "b" to mark word boundaries, since I suspected that I was matching line-breaks: 
+\begin{verbatim}
+     (\b.*[\wæøåÆØÅ]+.*\b)
+\end{verbatim}
+The b indicates a word boundary (such as a white-space or a line-break):
+\item \textbf{Result:} This did not change anything, and I were not matching words which started with ÆØÅ. So I removed the boundary.
+
+%TWELFTH STEP
+\item \textbf{Action:} I then tried to match and group line-breaks separately. However the line-break needed to be optional. Otherwise it would not match the last word on the list, which was not followed by a line-break:  
+\begin{verbatim}
+     (^.*[\wæøåÆØÅ]+.*)(\r*)
+\end{verbatim}
+\item \textbf{Result:} This worked. It is now a stop-word list for R. It means the following: Find a pattern where THE FIRST CHARACTERS, WHICH CAN BE ANYTHING EXCEPT FOR WHITE-SPACES AND LINE-BREAKS, APPEARS BETWEEN ZERO AND UNLIMITED TIMES. Followed by ONE OR MORE WORD LETTERS FROM A-Z, a-z, 0-9, ÆØÅ, æøå. Followed by ZERO OR MORE CHARACTERS, WHICH CAN BE ANYTHING EXCEPT FOR WHITE-SPACES OR LINE-BREAKS. Followed by ZERO OR MORE LINE-BREAKS. 
+\break{}
+However, after writing this explanation, I realised that I could just use the following code, since my code is way too over-engineered:
+\begin{verbatim}
+    (.+)(\r*)  
+\end{verbatim}
+The period captures all characters regardless of their capitalization including æøå, digits and special characters. It just means the following: Find a pattern WHICH CONTAINS ONE OR MORE CHARACTERS EXCEPT FOR WHITE-SPACES AND LINE-BREAKS followed by ZERO OR MORE LINE-BREAKS. 
+\end{itemize}
+
+%FINAL THOUGHTS
+\subsection{Final thoughts}
+It was actually quite fun, but also very frustrating, to work with regexes. Moreover, I realised, that it is very helpfull to write exactly what the regex is matching, since it made me realize, that there was a way more elegant solution. 
+
+%STOP WORD LIST FROM R TO VOYANT
+\section{11-09-2020}
+\subsection{Regex (Regular expressions): Stop-word list from R to Voyant!}
+\textbf{13.30}: Same task as before but in reverse.
+
+%ACTIONS AND Results
+\subsection{Actions and Results}
+\begin{itemize}
+
+%FIRST STEP
+\item \textbf{Action:} I started with my previous and over-engineered regex:
+\begin{verbatim}
+(^.*[\wæøåÆØÅ]+.*)(\r)
+\end{verbatim}
+\item \textbf{Result:} This did not work. The whole list was displayed as one match rather than multiple matches. 
+
+%SECOND STEP
+\item \textbf{Action:} I tried to but a word boundary around the regex
+\begin{verbatim}
+(\b.*[\wæøåÆØÅ]+.*\b)(\r)
+\end{verbatim}
+\item \textbf{Result:} No changes. 
+
+%THIRD STEP
+\item \textbf{Action:} I suspected that this was because of the periods in the regex. I, therefore, removed them. 
+\begin{verbatim}
+(\b[\wæøåÆØÅ]+\b)(\r)
+\end{verbatim}
+\item \textbf{Result:} Now I was not matching words with special characters such as umlauts or periods. But I could not use the period since it would match the quotation marks and commas. Moreover, I could not specify each special character, since I did not know which where used.
+
+%FOURTH STEP
+\item \textbf{Action:} After a break I realized that I should be trying to match the commas, the spaces and the quotation marks, since they are the ones I need to replace. So I made the following expression:
+\begin{verbatim}
+(", )
+\end{verbatim}
+This regex matches a string which contains a quotation mark followed by a comma and then a white-space. This is how all stop-words on the R list are separated.
+\item \textbf{Result:} This almost worked, however, the quotation mark at the start of each word was not captured. 
+
+%FIFTH STEP
+\item \textbf{Action:} I, therefore, added another quotation mark after the white-space, that way I should be able to match the commas at the start of each word as well:
+\begin{verbatim}
+(", ")
+\end{verbatim}
+\item \textbf{Result}: The first and last quotation mark in the list were not being matched. Moreover, a few words did not fit this pattern (probably an entry mistake). 
+
+%SIXTH STEP
+\item \textbf{Action:} I made different groups to match sequences, that did not fit the standard pattern (entry mistakes). 
+\begin{verbatim}
+(", ")|(")|(,)|( )
+\end{verbatim}
+The vertical line is a logic operator, which means OR. So this regex should catch either the quotation -- comma -- white-space sequence OR quotation marks OR commas OR white-spaces that do not follow this sequence (effectively all signs that are misplaced). 
+\item \textbf{Result}: This worked, but left a line-break at the beginning and at the end of the list and in places which did not follow the sequence of quotation -- comma -- space.
+\end{itemize}
+
+\subsection{Final Thoughts}
+\textbf{18.00}: I tried for hours to find a way to removed the extra line-breaks, but I could not. So for now, I will leave it as it is. 
+
+%STOP WORD LIST FROM R TO VOYANT
+\section{13-09-2020}
+\subsection{Regex (Regular expressions): Stop-word list from R to Voyant! - Part 2}
+
+%FIRST STEP
+
+
+\textbf{12.00}: I will proofread my assignment and submit it. I do not think, that I can crack the last part of the assignment.
+\break{}
+\break{}
+\textbf{13.00}: While proofreading my assignment, I suddenly realised the solution. I could just use a circumflex inside the brackets to indicate, which patterns I do not want to match.
+
+\subsection{Actions and Results}
+
+
+%FIRST STEP
+\begin{itemize}
+\item \textbf{Action:} I started by specifying that, I do not want any patterns containing white-spaces, commas or periods.
+\begin{verbatim}
+    ([^" ,]+)
+\end{verbatim}
+The + at the end ensures, that the characters are matched as a word, rather than individual letters. 
+\item \textbf{Result:} It worked, now I am matching all words in the list without matching commas, white-spaces or quotation marks
+
+%SECOND STEP
+\item \textbf{Action:} Now I just need to match the commas, the white-spaces and the quotation marks. So I wrote the following regex:
+\begin{verbatim}
+   ([^" ,]+)([" ,]*)
+\end{verbatim}
+This should match either a quotation mark, a white-space or a comma, if it is used between zero and unlimited times after the first group.
+\item \textbf{Result:} It almost worked. However, I'm not matching the first quotation mark on the list. 
+
+%THIRD STEP
+\item \textbf{Action:} However, I can just set the regex to match zero or more quotation marks at the start of the list by adding a quotation mark and an asterisk at the start of the regex
+\begin{verbatim}
+   ("*)([^" ,]+)([" ,]*)
+\end{verbatim}
+This should match the first quotation mark on the list.
+\item \textbf{Result:} It almost worked. There are two places, where there is a blank line-break. But that is probably because there are two line-breaks in the list. So I just need to match the line-breaks, as I did in the previous task.
+
+%FOURTH STEP
+\item \textbf{Action:} I added two groups for matching line-breaks in the regex. One at the beginning, and one at the end. A line-break at the end should be enough. But, by having one at the beginning as well, this regex should catch all line-breaks. Lastly, I made these line-breaks optional using the asterisk.
+\begin{verbatim}
+   (\r*)("*)([^" ,]+)([" ,]*)(\r*)
+\end{verbatim}
+\item \textbf{Result:} It worked! This regex means the following: Find a pattern that starts with ZERO OR MORE LINE-BREAKS followed by ZERO OR MORE QUOTATION MARKS and ONE OR MORE CHARACTERS THAT DOES NOT INCLUDE A QUOTATION MARK, A COMMA OR A WHITE-SPACE followed by ZERO OR MORE QUOTATION MARKS, COMMAS OR WHITE-SPACES followed by ZERO OR MORE LINE-BREAKS.  
+
+\end{itemize}
+%FINAL THOUGHTS
+\subsection{Final Thoughts}
+I learned that sometimes it helps to just take a step back from the project and return later to review it. It was while re-reading my journal, that I discovered how to solve this problem.  
+\pagebreak{}
+
+\bibliographystyle{apacite}
+\bibliography{biblio.bib}
+
+\end{document}
+
+
