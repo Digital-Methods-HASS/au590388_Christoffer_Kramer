@@ -1,13 +1,16 @@
 ---
 title: "HW5 - Make Data Move"
-author: ""
+author: ''
 date: "05/10/2020"
-output: html_document
+output:
+  pdf_document: default
+  html_document: default
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
+#Link to my github repo: https://github.com/Digital-Methods-HASS/au590388_Christoffer_Kramer/tree/master/learning_journal_and_assignments/week_42_gapminder/hw-instructions-main
 
 #  Explore the recent global developments with R
 Today, you will load a filtered gapminder dataset -  with a subset of data on global development from 1952 - 2007 in increments of 5 years - to capture the period between the Second World War and the Global Financial Crisis. 
