@@ -1,0 +1,72 @@
+---
+title: "R Markdown turtorial - SW Carpentry"
+author: "Christoffer M. Kramer"
+date: "21/10/2020"
+output: html_document
+---
+
+**This is bold**
+
+ _this is italics_
+
+* and - can create lists
+
+- this 
+- is
+* A
+* list
+
+"1." "2." etc. creates numbered lists, you can also use the same number
+
+1. this 
+1. is 
+1. a 
+1. list 
+
+"#" creates titles "##" creates subtitles etc.
+#Title
+##Subtitle
+###Subsubtitle
+
+[this is a hyperlink](http://swcarpentry.github.io/r-novice-gapminder/15-knitr-markdown/index.html)
+[This is a picture of me drinking af beer](IMG_3335.JPG)
+
+Use dollar sign for math equations 
+$1+1 = 3 (or is it 2?)
+
+For help with formatting look at "Markdown Qucik reference" under help
+
+Always give code chunks a unique name
+```{r test}
+library(ggplot2)
+library(gapminder)
+
+gapminder
+theme_set(theme_bw())  # set theme to white background for better visibility
+anim <- ggplot(subset(gapminder, continent == "Asia"), aes(gdpPercap, lifeExp)) +
+  geom_point()
+
+anim
+
+```
+
+You can change how chunks are displayed
+
+- echo=FALSE to avoid having the code itself shown.
+- Use results="hide" to avoid having any results printed.
+- Use eval=FALSE to have the code shown but not evaluated.
+- Use warning=FALSE and message=FALSE to hide any warnings or messages produced.
+- Use fig.height and fig.width to control the size of the figures produced (in inches).
+
+use global_options to set options for alle code chunks
+below is a very small point graph
+
+```{r test2, fig.height = 1, fig.widt = 2}
+anim
+```
+YOu can make inline codes, which replaces the code with the value of the result
+
+`r round(2, 2)`
+
+
+
