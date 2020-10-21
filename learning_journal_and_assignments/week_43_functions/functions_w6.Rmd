@@ -1,0 +1,95 @@
+---
+title: "Functions Assignment W6"
+author: "Christoffer M. Kramer"
+date: "21/10/2020"
+output: html_document
+---
+
+#Question 1
+
+Define a defensive function that calculates the Gross Domestic Product of a nation from the data available in the gapminder dataset. Using that function, calculate the GDP of Denmark in the following years: 1967, 1977, 1987, 1997, 2007, and 2017.
+
+First I load the relevant libraries
+```{r load_lib}
+library(gapminder)
+library(tidyverse)
+options(scipen = 999) #disable scientific notation
+
+```
+
+Then I create a function to calculate gdp. This  solution is found through [software carpentry's tutorial](http://swcarpentry.github.io/r-novice-gapminder/10-functions/index.html). However, I have changed the names, since I find longer, but more descriptive names easier to understand.
+It calculates GDP by subsetting the Gapminder data from the parameters "year" and "country".The default parameters are Null and it is defensive since it starts out by checking if the parameters are NULL. If no parameters are given, it will work on the whole datase. If only one parameter is given it will create a subset based on that parameter.
+
+```{r create_function}
+calcGDP <- function(dataset, year=NULL, country=NULL) {
+  if(!is.null(year)) { #If year is not null
+    dataset <- dataset[dataset$year %in% year,] #subset the dataset by year
+  }
+  if (!is.null(country)) { #if country is not null
+    dataset <- dataset[dataset$country %in% country,] #subset the dataset by country
+  }
+  gdp_result <- dataset$pop * dataset$gdpPercap #calculate gdp by multiplying GDP per capita with the total population.
+                                                #Save the result in the object "gpd_result"
+  
+  new_column <- cbind(dataset, gdp=gdp_result) #create a new column called GDP which contains the object "gdp_result" 
+  return(new_column)
+}
+```
+
+Lastly, I just need to write the relevant values in to the parameters
+```{r test_function}
+calcGDP(gapminder, year=1967, country = "Denmark")
+calcGDP(gapminder, year=1977, country = "Denmark")
+calcGDP(gapminder, year=1987, country = "Denmark")
+calcGDP(gapminder, year=1997, country = "Denmark")
+calcGDP(gapminder, year=2007, country = "Denmark")
+calcGDP(gapminder, year=2017, country = "Denmark")
+```
+However I believe there is an easier way to test all the different years, by creating a vector. I almost made it work, but it would not show the last value in the vector, no matter what I did. If YOU (the reviewer) know why this is the case, please write it in your feedback, I'm genuinely curious about WTF is happening here. 
+```{r test_try}
+years <- c(1967, 1977, 1987, 1997, 2007, 2017) #Create a vector containing all the years
+calcGDP(gapminder, years, country = "Denmark") #calculate the gdp for each year in the vector
+```
+##Question 2
+Write a script that loops over each country in the gapminder dataset, tests whether the country starts with a ‘B’ , and print out whether the life expectancy is smaller than 50, between 50 and 70, or greater than 70.
+
+I start by creating an object called "mean_life_country". This object groups by country. It then filters out all rows, where the country does not start with the letter B. Then it summarises by calculating the average life expectancy for each country and creates the column "mean_life".
+```{r q2}
+mean_life_country <- gapminder %>% #Create a new object called "mean_life_country"
+  group_by(country) %>% #group by country
+  filter(str_detect(country, "^B")) %>% #filter out values where the first letter of the column "country" is not B
+  summarise(mean_life = mean(lifeExp)) #create a new column called "mean_life"
+```
+
+
+I then create a new csv document which contains the previous object. Then I set the value of the object "mean_life_country" to be the csv file.
+
+```{r csv}
+write.csv(mean_life_country, "mean_life_country.csv") #create a csv document called "mean_life_country.csv
+mean_life_country <- read.csv("mean_life_country.csv") #let the object "mean_life_country" contain the csv file
+```
+
+I then loop through each country in my csv file. Then I get the value of the column "mean_life" and store it in a new object called "mean_life_i". 
+Lastly I use if-else statements to check if the value of "mean_life_i" is smaller than 50, between 50 and 70, or above 70. It then prints out the value of the country (i) and the value of "mean_life_i". 
+
+```{r loop}
+
+for (i in mean_life_country$country) { #for every country in "mean_life_country"
+  
+  mean_life_i <- mean_life_country[mean_life_country$country == i, "mean_life"] #create an object called "mean_life, which is a subvector of "mean_life_country" 
+  
+  if(mean_life_i < 50) { #if "mean life i smaller than 50
+    cat("The life expectancy of", i, "is smaller than 50", "(",mean_life_i,")\n") #print this out
+  }
+  else if (mean_life_i > 50 && mean_life_i < 70) { #if "mean life" is larger than 50 and smaller than 70
+    cat("The life expectancy of", i, "is between 50 and 70", "(",mean_life_i,")\n") #print this out
+    
+  } else { #if "mean_life is larger than 70
+    cat("The life expectancy of", i, "is larger than 70", "(",mean_life_i,")\n") #print this out
+    
+  }
+
+}
+
+```
+
