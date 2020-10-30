@@ -5,6 +5,9 @@ date: "30/10/2020"
 output: html_document
 ---
 
+My repo: https://github.com/Digital-Methods-HASS/au590388_Christoffer_Kramer/tree/master/learning_journal_and_assignments/week_44_webscrape
+
+
 **Take the repository at https://github.com/adivea/KilledbyPolice2020.git and depending on your familiarity with R, either** 
 
 1. *adapt the webscraping example to scrape homicide data from FBI site and produce a meaningful report on how homicide trends evolve around US in relation to this urban unrest*
@@ -53,7 +56,7 @@ The links to all transcripts are located here: https://www.debates.org/voter-edu
 Therefore, I need to grab all the relevant links (without getting links from the nav-bar).
 
 Luckily the links follow an easy structure. Every link is contained within an "a" element, which is inside of of "p" element, which inside a "blockqoute" element. 
-So by navigating to the "blockqoute" element, I can grab the "child" (which is "p") and then navigate to the relevant "a" element and then select all a elements that contain a link (a href attribute). This ensures, that I won't get "a" elements without links.
+So by navigating to the "blockqoute" element, I can grab the "child" (which is "p") and then navigate to the relevant "a" element and then select all a elements that contain a link (a href attribute).
 
 ```{r}
 link_html <- read_html("https://www.debates.org/voter-education/debate-transcripts/") %>% 
@@ -131,7 +134,7 @@ data("stop_words")#Get all stopwords
   count(word, sort = TRUE) %>% #Count each word and sort the result.
      filter(n > 30) %>% #Remove words, that does not appear more than 30 times
   ggplot(aes(word, n)) + #Make a ggplot
-  geom_col() + #Make it a bar chart where the hight represents the value
+  geom_col() + #Make it a bar chart where the height represents the value
   coord_flip() #Flip the bar chart
 
 
