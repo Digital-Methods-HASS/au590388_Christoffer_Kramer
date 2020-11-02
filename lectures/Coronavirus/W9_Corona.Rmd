@@ -1,0 +1,218 @@
+---
+title: "Exploring ncov2019 package"
+author: "Adela Sobotkova"
+date:  '`r format(Sys.Date(), "%d-%B-%Y")`'
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+# Coronavirus
+
+Coronaviruses (CoV) are a large family of viruses that cause illness ranging from the common cold to more severe diseases such as Middle East Respiratory Syndrome (MERS-CoV) and Severe Acute Respiratory Syndrome (SARS-CoV). A novel coronavirus (nCoV) is a new strain that has not been previously identified in humans.
+This post is based on a blog post from Guangchuang Yu, a professor of bioinformatics at Southern Medical University, about an R package <https://github.com/GuangchuangYu/nCov2019> that contains one of the most up-to-date nCov data in China and all over the world. Patrick Tung has been translating this package from Chinese into English so that it is more accessible to everyone.
+
+<https://towardsdatascience.com/an-r-package-to-explore-the-novel-coronavirus-590055738ad6>
+
+# Quickstart
+To start off, you need to install the `nCov2019` package by running the following command (uncomment/remove the hashtag for the block to run):
+
+```{r install}
+remotes::install_github("GuangchuangYu/nCov2019")
+#install.packages("remotes")
+```
+
+Next we attach the library:
+```{r library, warning=FALSE}
+library(tidyverse)
+library(nCov2019)
+
+```
+To get the latest data, you can load it in with `get_nCov2019()`.
+Get giver den seneste data
+Load giver et specifikt område.
+
+```{r get data, warning=FALSE}
+x <- get_nCov2019(lang='en')
+```
+The `x` object you just created is a list. The primary data in it pertains to China, but one of its elements also contains global data.
+
+## Check the data
+If you print the data, it will show the total number of confirmed cases in China, as well as the latest updated time:
+```{r}
+x
+# your dates will differ depending on when you ran it
+```
+This data is collected from Tencent, at https://news.qq.com/zt2020/page/feiyan.htm, which contains one of the most up-to-date public information of the coronavirus.
+
+## Make a plot of China
+If you wanted to visualize the cumulative summary data for China, an example plot could be the following:
+
+```{r}
+library(ggplot2)
+ggplot(summary(x), aes(as.Date(date, "%m.%d"), as.numeric(confirm))) +
+  geom_col(fill='firebrick') + theme_minimal(base_size = 14) +
+  xlab(NULL) + ylab(NULL) + 
+  labs(caption = paste("accessed date:", time(x)))
+```
+
+
+# World Map
+Getting a plot of the world map takes only three lines (uncomment the first two if you skipped the chunks above:
+
+```{r, warning=FALSE}
+# require(nCov2019)
+# x = get_nCov2019(lang='en')
+plot(x)
+```
+
+## Global data
+To look at the global data, you subset the dataset via `x['global']`:
+
+```{r ,warning=FALSE}
+#x <- get_nCov2019(lang = 'en') # uncomment if you did not run the chunks above
+world <- x['global']
+head(world, 12)
+```
+
+
+## Plot global data
+
+Confirmed cases in absolute numbers
+```{r}
+library(forcats)
+library(ggplot2)
+d = head(world,12) # 12 most affected countries in absolute numbers 
+d$confirm=as.numeric(d$confirm)
+d$name = fct_reorder(d$name, d$confirm)
+ggplot(d, aes(name, confirm)) + 
+  geom_col(fill='steelblue') + coord_flip() +
+  geom_text(aes(y = confirm+2, label=confirm), hjust=0) +
+  theme_minimal(base_size=14) + 
+  scale_y_continuous(expand=c(0,10)) +
+  xlab(NULL) + ylab(NULL)
+```
+
+Plot it by the death rate
+```{r}
+library(forcats)
+library(ggplot2)
+d = head(world,12) # 12 most affected countries in absolute numbers 
+d$deadRate=as.numeric(d$deadRate)
+d$name = fct_reorder(d$name, d$deadRate)
+ggplot(d, aes(name, deadRate)) + 
+  geom_col(fill='steelblue') + coord_flip() +
+  geom_text(aes(y = deadRate+2, label=deadRate), hjust=0) +
+  theme_minimal(base_size=14) + 
+  scale_y_continuous() +
+  xlab(NULL) + ylab(NULL)
+```
+
+## Global historical  data
+
+To look at the global historical data in `ncov2019` package, you need to use the `load_nCov2019` function and then subset via `y['global', ]`. Beware the difference between `get_nCov2019` and `load_nCov2019` in using the current data, and historical data respectively!
+
+The data is organized around daily events (it is long).
+
+```{r prepping for tiled chart, warning=FALSE}
+y <- load_nCov2019(lang = 'en')
+d <- y['global',]
+head(d)
+```
+
+# Build up a heatmap of the global situation in the last 7 days
+
+Here we will build an overview of the global landscape of coronavirus in one condensed tiled chart. 
+We will use the global list from the historical `nCov2019` package created in the chunk above.
+
+Next, we limit the time to go back 7 days and filter out all missing values. We set the colors to change with exponential differences to counts and sort the countries by number of confirmed cases
+
+```{r preparation for a tiled chart of confirmed cases}
+max_time <- max(d$time)
+min_time <- max_time - 7
+d <- na.omit(d[d$time >= min_time & d$time <= max_time,])  # we are selecting values in the last 7 days
+d <- d[d$cum_confirm>100000,] # I want to declutter and only show seriously affected countries
+dd <- d[d$time == max(d$time, na.rm = TRUE),]
+d$country <- factor(d$country, 
+                    levels=dd$country[order(dd$cum_confirm)])   # we want countries sorted by number of cases
+breaks = c(10, 100, 1000, 10000, 100000, 1000000, 10000000)
+
+```
+
+Finally, we can plot the result with geom_tile()
+```{r tiled chart of confirmed cases}
+options( scipen = 20 ) # I want to display full (unscientific) numbers
+ggplot(d, aes(time, country)) + 
+  geom_tile(aes(fill = cum_confirm), color = 'black') + 
+  scale_fill_viridis_c(trans = 'log', breaks = breaks, 
+                       labels = breaks) + 
+  xlab(NULL) + ylab(NULL) +
+  scale_x_date(date_labels = "%Y-%m-%d") + theme_minimal()
+```
+
+
+
+
+
+<span style="color:blue">
+*Task 1: Can you change the heatmap to display the cases where patients died or healed?* </span> 
+
+<span style="color:blue">
+*Task 2: Can you change the heatmap to display the changing infection or death rate per million in the last seven days? Hint: you might need to scrape the countries' population, and calculate this rate before changing the heatmap display.* </span>
+
+
+
+## Little detour to Belgium and the Czech Republic
+A colleague in Belgium told me last week, that while the Czech Republic has been getting press for rising infection rates, the death toll was much much higher in Belgium already in the spring, despite the fact that the two countries have similar sized population (11.6 and 10.7 mil people respectively) and Belgium being much richer.
+Let's pull out the information for Belgium and Czech Republic.
+
+Just to have clean full dataset, we may wish to rerun the data loading.
+```{r, warning=FALSE}
+y <- load_nCov2019(lang = 'en') 
+a <- y['global',]
+head(a, 12)
+```
+
+```{r}
+library(tidyverse)
+bc <- a %>% 
+  filter(country == "Belgium" | country == "Czech Republic") 
+head(bc)  
+```
+
+Let's check the situation in both places
+```{r}
+ggplot(bc, aes(time, as.numeric(cum_confirm))) +
+ geom_col(aes(fill = country), position = "dodge" )+
+  labs( x = "date", y = "number of confirmed cases" )
+```
+
+Yes, the infection rate is climbing in both places equally fast in the last couple weeks. 
+Now, it may be good to compare the relative death rates (per 1,000,000 people)
+```{r}
+bc <- bc %>% 
+  mutate(pop = case_when(country == "Czech Republic" ~ 10700000,
+                                country == "Belgium" ~ 11600000),
+         rate_confirm = cum_confirm/pop, rate_dead = cum_dead/pop)
+```
+
+```{r}
+ggplot(bc, aes(time, as.numeric(rate_dead))) +
+ geom_col(aes(fill = country), position = "dodge" )+
+  labs( x = "date", y = "death rate" )
+```
+
+
+
+
+
+I see that my colleague was right as far as the death rates go. 
+What could be behind this difference? Was Belgium more lax about the spring lockdown? Were hospitals overwhelmed or were senior homes seriously compromised?  Do we see the effect of higher population density or greater proportion of aging population (or high density of politicians)?
+
+<span style="color:blue"> *Task 3: Formulate a proposition about the difference between Belgium and CZ death cases and investigate it using any data you can find.* </span>
+
+# Bibliography and other resources
+If you use `nCov2019`, please cite the following preprint:
+
+Tianzhi Wu, Erqiang Hu, Xijin Ge*, Guangchuang Yu*. Open-source analytics tools for studying the COVID-19 coronavirus outbreak. medRxiv, 2020.02.25.20027433. doi: https://doi.org/10.1101/2020.02.25.20027433
