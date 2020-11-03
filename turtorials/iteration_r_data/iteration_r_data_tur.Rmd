@@ -1,0 +1,532 @@
+---
+title: "Iteration R for Data Science"
+author: "Christoffer M. Kramer"
+date: "3/11/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(tidyverse)
+```
+
+
+Bruges når det samme skal gøres mange gange.
+
+imperative programming og functional programming (FP). 
+Imperative: for og while loops. FP er en måde at udtrække koderne i løkken og gør dem til functioner.
+
+```{r}
+
+df <- tibble(
+  a = rnorm(10),
+  b = rnorm(10),
+  c = rnorm(10),
+  d = rnorm(10)
+)
+```
+Lad os udregne medianen på hver 
+
+```{r}
+
+# output <- vector("double", ncol(df))  # 1. output
+# for (i in seq_along(df)) {            # 2. sequence
+#   output[[i]] <- median(df[[i]])      # 3. body
+# }
+# output
+
+```
+
+Hver løkke har tre ting:
+1. output. Sæt altid plads af til outputtet, dette er vigtigt for effektiviteten. Functionen vector laver nye dataoutput.
+2. sekvensen: seq_along(dataframe) Bestemmer hvad der skal itereres over. Mange bruger 1:length(vector) for at bestemme, hvad man skal gå igennem. Men seq_along() er bedre, da den håndterer vectorer på nul i længde.
+3. Kroppen: Dette er koden, der gør arbejdet. Det gører, hver gang man kommer til et element.
+
+seq_along gennemgår hver colonne.Den giver kolonneindekset som output.
+Brug [[]] For at vise, at man vil arbejde med individuelt element.
+_Compute the mean of every column in mtcars._
+
+```{r}
+mtcars
+mean_col <- colMeans(mtcars) #Dette er nemmere
+
+for (i in seq_along(mtcars)) { #Dette er korrekt
+  print(mean(mtcars[[i]]))
+}
+# mean_col
+
+```
+_Determine the type of each column in nycflights13::flights._
+
+```{r}
+vecte <- nycflights13::flights
+ #sapply(nycflights13::flights, class) Den nemme løsning
+ 
+ for (i in seq_along(vecte)) { #Den korrekte
+  print(class(vecte[[i]]))
+
+ }
+
+
+```
+
+_Compute the number of unique values in each column of iris._
+```{r}
+iris
+# 
+# for (i in seq_along(iris)) {
+#   
+#   for (j in iris) {
+#     
+#     
+#   }
+#   
+# }
+```
+
+Fire variationer af løkker:
+1. Modificer et eksisterende object.
+2. Iterere over navne eller værdier
+3. håndter output af en ukendt længde
+4. Håndtere sekvenser på en ukendt længde.
+
+3 måder at loope på 
+
+1. Loop over elementer for (i in x) dette brugest til plotte 
+2. Loop gennem navne for (i in names(x)) Dette giver et navn, som kan bruges til at tilgå værdigen fra x[[i]]
+3. Gennem tal for (i in seq_along(x)) giver både mavmet og værdien f.eks:
+
+```{r}
+# for (i in seq_along(x)) {
+#   name <- names(x)[[i]]
+#   value <- x[[i]]
+# }
+```
+
+Ukendt output længde
+Bedste løsning er at gennem resultaterne i en liste og derefter kombinerer det til en enkelt vector, når løkken er færdig eks.:
+```{r}
+
+# out <- vector("list", length(means))
+# for (i in seq_along(means)) {
+#   n <- sample(100, 1)
+#   out[[i]] <- rnorm(n, means[[i]])
+# }
+# str(out)
+# #> List of 3
+# #>  $ : num [1:76] -0.3389 -0.0756 0.0402 0.1243 -0.9984 ...
+# #>  $ : num [1:17] -0.11 1.149 0.614 0.77 1.392 ...
+# #>  $ : num [1:41] 1.88 2.46 2.62 1.82 1.88 ...
+# str(unlist(out))
+# #>  num [1:134] -0.3389 -0.0756 0.0402 0.1243 -0.9984 ...
+
+```
+
+Ukendt sekvenslængde. Dette er normalt når man laver simulationer. Man kan f.eks. gøre det indtil man får tre kroner i træk (plat og krone)
+Dette gøres med et while loop. Alle for loops kan omskrives til et while loop
+
+```{r}
+# while (condition) {
+#   # body
+# }
+# 
+# for (i in seq_along(x)) {
+#   # body
+# }
+# 
+# # Equivalent to
+# i <- 1
+# while (i <= length(x)) {
+#   # body
+#   i <- i + 1 
+# }
+```
+
+eksempel: 
+```{r}
+flip <- function() sample(c("T", "H"), 1)
+
+flips <- 0
+nheads <- 0
+
+while (nheads < 3) {
+  if (flip() == "H") {
+    nheads <- nheads + 1
+  } else {
+    nheads <- 0
+  }
+  flips <- flips + 1
+}
+flips
+#> [1] 21
+
+```
+_Imagine you have a directory full of CSV files that you want to read in. You have their paths in a vector, files <- dir("data/", pattern = "\\.csv$", full.names = TRUE), and now want to read each one with read_csv(). Write the for loop that will load them into a single data frame._
+```{r}
+
+# files <- dir("data/", pattern = "\\.csv$", full.names = TRUE)
+# 
+# for (nm in names(file_list)) {
+# 
+#   read_csv(filelist[[nm]])
+# }
+```
+
+_What does this code do? How does it work?_ It changes the name of a value to show if it is manual or not.
+```{r}
+
+trans <- list( 
+  disp = function(x) x * 0.0163871,
+  am = function(x) {
+    factor(x, labels = c("auto", "manual"))
+  }
+)
+for (var in names(trans)) {
+  mtcars[[var]] <- trans[[var]](mtcars[[var]])
+}
+mtcars
+```
+
+Fremfor at bruge for løkker kan man gemme dem i en function og blot benytte funktionen. 
+
+```{r}
+df <- tibble(
+  a = rnorm(10),
+  b = rnorm(10),
+  c = rnorm(10),
+  d = rnorm(10)
+)
+
+```
+
+Imagine you want to compute the mean of every column. You could do that with a for loop:
+```{r}
+output <- vector("double", length(df))
+for (i in seq_along(df)) {
+  output[[i]] <- mean(df[[i]])
+}
+output
+```
+I en function:
+```{r}
+col_mean <- function(df) {
+  output <- vector("double", length(df))
+  for (i in seq_along(df)) {
+    output[i] <- mean(df[[i]])
+  }
+  output
+}
+```
+
+Hvis man vil hve den til at udregne andre ting for kolonnerne vil man ende med at kopiere sin kode i functionen:
+
+```{r}
+col_median <- function(df) {
+  output <- vector("double", length(df))
+  for (i in seq_along(df)) {
+    output[i] <- median(df[[i]])
+  }
+  output
+}
+col_sd <- function(df) {
+  output <- vector("double", length(df))
+  for (i in seq_along(df)) {
+    output[i] <- sd(df[[i]])
+  }
+  output
+}
+
+```
+
+Man kan bruge funktioner inde i i argumenter, derved slipper man for at gentage dem:
+
+```{r}
+col_summary <- function(df, fun) {
+  out <- vector("double", length(df))
+  for (i in seq_along(df)) {
+    stopifnot(is.numeric(df[[i]]))
+    out[i] <- fun(df[[i]])
+  }
+  out
+}
+col_summary(df, median)
+#> [1] -0.51850298  0.02779864  0.17295591 -0.61163819
+col_summary(df, mean)
+#> [1] -0.3260369  0.1356639  0.4291403 -0.2498034
+
+```
+Man kan bruge purr pakken fremfor løkker. 
+Man bruger purr til at løse et problem for et element, hvorefter purr sørger for at generalisere det til alle kolonner.
+Med Purr kan man opdele problemer i små elementer og sammensætte dem til sidst.
+
+At loope over en vector, gøre noget ved hvert element og derefter gemme resultatet er så almindeligt at purr pakken kan gøre det for dig.
+
+map() makes a list.
+map_lgl() makes a logical vector.
+map_int() makes an integer vector.
+map_dbl() makes a double vector.
+map_chr() makes a character vector.
+
+hver function tager en vector som input og returnere et vector. 
+
+```{r}
+
+map_dbl(df, mean)
+#>          a          b          c          d 
+#> -0.3260369  0.1356639  0.4291403 -0.2498034
+map_dbl(df, median)
+#>           a           b           c           d 
+#> -0.51850298  0.02779864  0.17295591 -0.61163819
+map_dbl(df, sd)
+#>         a         b         c         d 
+#> 0.9214834 0.4848945 0.9816016 1.1563324
+```
+
+Ovenstående gør altså hvad vores egen function gjorde
+De kan også pipes:
+```{r}
+df %>% map_dbl(mean)
+#>          a          b          c          d 
+#> -0.3260369  0.1356639  0.4291403 -0.2498034
+df %>% map_dbl(median)
+#>           a           b           c           d 
+#> -0.51850298  0.02779864  0.17295591 -0.61163819
+df %>% map_dbl(sd)
+#>         a         b         c         d 
+#> 0.9214834 0.4848945 0.9816016 1.1563324
+```
+map gemmer navnene:
+```{r}
+
+z <- list(x = 1:3, y = 4:5)
+map_int(z, length)
+#> x y 
+#> 3 2
+```
+Med punktum kan man referer til det nuværende element (ligesom [[]])
+```{r}
+models <- mtcars %>% 
+  split(.$cyl) %>% 
+  map(~lm(mpg ~ wt, data = .))
+```
+
+Med indekser kan man tilgå elementers positioner (i flere elementer)
+```{r}
+x <- list(list(1, 2, 3), list(4, 5, 6), list(7, 8, 9))
+x %>% map_dbl(2)
+#> [1] 2 5 8
+```
+_Compute the mean of every column in mtcars._
+```{r}
+map(mtcars, mean)
+```
+_Determine the type of each column in nycflights13::flights._
+```{r}
+
+map(nycflights13::flights, class)
+```
+_Compute the number of unique values in each column of iris._
+```{r}
+
+map(iris, unique)
+```
+_How can you create a single vector that for each column in a data frame indicates whether or not it’s a factor?_
+```{r}
+
+map(mtcars, is.factor)
+```
+_What happens when you use the map functions on vectors that aren’t lists? What does map(1:5, runif) do? Why?_
+```{r}
+
+map(1:5, runif)
+```
+
+_What does map(-2:2, rnorm, n = 5) do? Why? What does map_dbl(-2:2, rnorm, n = 5) do? Why?_
+```{r}
+map(-2:2, rnorm, n = 5)
+#map_dbl(-2:2, rnorm, n = 5)
+
+```
+
+_Rewrite map(x, function(df) lm(mpg ~ wt, data = df)) to eliminate the anonymous function._
+```{r}
+# #ap(x, function(df) lm(mpg ~ wt, data = df))
+# ap(x, .) lm(mpg ~ wt, data = .)
+```
+
+Fem functioner i safely() for at undgå at alt stopper, den returnerer enten result = NULL (fejl) eller error = NULL (succes)
+
+```{r}
+safe_log <- safely(log)
+str(safe_log(10))
+#> List of 2
+#>  $ result: num 2.3
+#>  $ error : NULL
+str(safe_log("a"))
+#> List of 2
+#>  $ result: NULL
+#>  $ error :List of 2
+#>   ..$ message: chr "non-numeric argument to mathematical function"
+#>   ..$ call   : language .Primitive("log")(x, base)
+#>   ..- attr(*, "class")= chr [1:3] "simpleError" "error" "condition"
+```
+Kan bruges med map()
+
+```{r}
+
+x <- list(1, 10, "a")
+y <- x %>% map(safely(log))
+str(y)
+```
+
+Det safely altså gør er, at den ikke stopper arbejdet på elementer, der passer ind i functionen.
+Man kan opdele dem i lister med transpose()
+```{r}
+
+y <- y %>% transpose()
+str(y)
+```
+
+Man har en liste med succes og en med fejl.
+Enten kan man fortsætte med de succesfulde elementer eller undersøge fejlene nærmere:
+```{r}
+is_ok <- y$error %>% map_lgl(is_null)
+x[!is_ok]
+#> [[1]]
+#> [1] "a"
+y$result[is_ok] %>% flatten_dbl()
+```
+possibly() fungerer altid, men den giver en standardværdi til alle fejl,
+```{r}
+x <- list(1, 10, "a")
+x %>% map_dbl(possibly(log, NA_real_))
+#> [1] 0.000000 2.302585       NA
+
+```
+quietly gemmer alle fejlmeddelser, den fungerer altid:
+```{r}
+x <- list(1, -1)
+x %>% map(quietly(log)) %>% str()
+```
+map2 iterer over to vectorer parralelt. 
+pmap() kan bruges til at vælge, hvor mange vectorere man vil iterere over.
+
+walk() minder om map() men bruges til at kalde en funktion for dens side-effekter ikke for dens return værdi.
+Dette gøres, hvis man vil have outputtet på skærmen eller gemme filer. Det vigtige er handlingen ikke værdien. 
+
+```{r}
+
+x <- list(1, "a", 3)
+
+x %>% 
+  walk(print)
+```
+pwalk eller walk2 er mere brugbare (Man kan meget nemt bruge print på x). med pwalk kan hver fil gemmes i en disk.
+
+```{r}
+
+library(ggplot2)
+plots <- mtcars %>% 
+  split(.$cyl) %>% 
+  map(~ggplot(., aes(mpg, wt)) + geom_point())
+paths <- stringr::str_c(names(plots), ".pdf")
+
+pwalk(list(paths, plots), ggsave, path = tempdir())
+```
+
+De kan pipes videre.
+
+med keep() og discard() kan man fjerne eleementer, der enten er true eller false.
+```{r}
+iris %>% 
+  keep(is.factor) %>% 
+  str()
+#> 'data.frame':    150 obs. of  1 variable:
+#>  $ Species: Factor w/ 3 levels "setosa","versicolor",..: 1 1 1 1 1 1 1 1 1 1 ...
+
+iris %>% 
+  discard(is.factor) %>% 
+  str()
+
+```
+some() og every() undersøger om noget er sandt for nogle eller alle elementer:
+```{r}
+
+x <- list(1:5, letters, list(10))
+
+x %>% 
+  some(is_character)
+#> [1] TRUE
+
+x %>% 
+  every(is_vector)
+
+x %>%  
+  every(is_character)
+```
+detect() finder det første sted der er TRUE. detect_index returnerer positionen:
+
+```{r}
+
+x <- sample(10)
+x
+#>  [1] 10  6  1  3  2  4  5  8  9  7
+
+x %>% 
+  detect(~ . > 5)
+#> [1] 10
+
+x %>% 
+  detect_index(~ . > 5)
+#> [1] 1
+```
+
+head_while tail_while tager elementer fra starten eller slutningen af en vector og udfører en handlinger så længe det er sandt.
+
+```{r}
+x %>% 
+  head_while(~ . > 5)
+#> [1] 10  6
+
+x %>% 
+  tail_while(~ . > 5)
+
+```
+
+med reduce() kan man gører datasæt simplere og man kan sammensætte datasæt:
+```{r}
+dfs <- list(
+  age = tibble(name = "John", age = 30),
+  sex = tibble(name = c("John", "Mary"), sex = c("M", "F")),
+  trt = tibble(name = "Mary", treatment = "A")
+)
+
+dfs %>% reduce(full_join)
+```
+
+Reduce kan f.eks. og finde steder hvor to vectorer overlapper:
+
+```{r}
+
+vs <- list(
+  c(1, 3, 5, 6, 10),
+  c(1, 2, 3, 7, 8, 10),
+  c(1, 2, 3, 4, 8, 9, 10)
+)
+
+vs %>% reduce(intersect)
+```
+
+reduce() tager en binær funktion og bruger den på alle elementer til der kun er et element tilbage. accumalate() minder om den, men beholder mellemresultater:
+
+```{r}
+x <- sample(10)
+x
+#>  [1]  7  5 10  9  8  3  1  4  2  6
+x %>% accumulate(`+`)
+#>  [1]  7 12 22 31 39 42 43 47 49 55
+```
+
