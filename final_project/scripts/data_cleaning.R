@@ -20,6 +20,7 @@ all_debates <- read.csv("data/all_debates.csv")
 all_debates <- tibble(all_debates)
 
 
+
 # Clean names in debate column ----------------------------------------------
 #SOME OF THESE SHOULD BE AF FUNCTION
 debate_names #Do all debates have proper names?
@@ -40,6 +41,12 @@ all_debates <- mutate_if(all_debates,
 )
 all_debates <- all_debates[!(all_debates$date == "/voter-education/debate-transcripts/2000-debate-transcripts-translations/"),]
 
+
+# Make "date" a proper date with lubridate --------------------------------
+all_debates <- all_debates %>% 
+  mutate(date = mdy(date))
+
+
 # Find all names and save as a tibble ----------------------------------
 last_name <- str_extract(all_debates$text, "^[A-Z]+:") %>% 
   str_extract("[A-Z]+")
@@ -52,7 +59,15 @@ all_debates <- na.locf(all_debates)
 all_debates %>% 
   mutate(last_name = toupper(last_name))
 
-all_debates <- left_join(all_debates, candidates, by = c("last_name" = "last_name"))
+test <- all_debates %>% 
+  mutate(day = day(date),
+         month = month(date),
+         year = year(date)
+         )
+
+view(test)
+
+all_debates <- left_join(all_debates, candidates, by = c("last_name" = "last_name", "year" == year(date)))
 
 all_debates$position[all_debates$last_name == "WALLACE" & all_debates$date == "september-29-2020"] <- NA
 all_debates$party[all_debates$last_name == "WALLACE" & all_debates$date == "september-29-2020"] <- NA
@@ -72,4 +87,21 @@ all_debates <- all_debates %>%
   mutate(date = mdy(date))
 
  view(all_debates)
+
+# 
+# test <- all_debates %>% 
+#    select(last_name, date) %>% 
+#     distinct() %>%
+#    group_by(last_name) %>% 
+#    summarise(n = n()) %>% 
+#    filter(n > 2)
+# 
+# view(test) 
+# 
+# test <- all_debates %>% 
+#   select(last_name, date) %>% 
+#   filter(last_name == "BUSH") %>% 
+#   distinct()
+# 
+# test
 
