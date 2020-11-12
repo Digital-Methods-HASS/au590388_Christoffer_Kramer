@@ -22,86 +22,64 @@ all_debates <- tibble(all_debates)
 
 
 # Clean names in debate column ----------------------------------------------
-#SOME OF THESE SHOULD BE AF FUNCTION
-debate_names #Do all debates have proper names?
+#Functions that cleans names by replacing an existing string with a new string
+clean_names <- function(dataset, old_pattern, new_replacement) {
+  mutate_if(dataset,
+            is.character,
+            str_replace_all, pattern = old_pattern, replacement = new_replacement)
+}
 
-all_debates <- mutate_if(all_debates,
-    is.character,
-    str_replace_all, pattern = "/voter-education/debate-transcripts/2008-debate-transcript/", replacement = "september-26-2008"
-  ) 
+#Find the wrong names
+wrong_names <- debate_names[grep("[A-Za-z]+-\\d+-\\d+", debate_names, invert = TRUE)]
 
-all_debates <- mutate_if(all_debates,
-                         is.character,
-                         str_replace_all, pattern = "/voter-education/debate-transcripts/2008-debate-transcript-2/", replacement = "october-2-2008"
-)
-
-all_debates <- mutate_if(all_debates,
-                         is.character,
-                         str_replace_all, pattern = "/voter-education/debate-transcripts/vice-presidential-debate-at-the-university-of-utah-in-salt-lake-city-utah/", replacement = "october-7-2020"
-)
+#Remove translations page from list of names and the dataset
+debate_names <- debate_names[!(debate_names == "/voter-education/debate-transcripts/2000-debate-transcripts-translations/")]
 all_debates <- all_debates[!(all_debates$date == "/voter-education/debate-transcripts/2000-debate-transcripts-translations/"),]
 
+#Make a list of correct names
+right_names <- c("october-7-2020", "september-26-2008", "october-2-2008", "september-26-2008")   
 
-# Make "date" a proper date with lubridate --------------------------------
+i <- 0 #Index
+#Loop through every wrong name and replace it with a name from the vector "right_names" in the dataset and the vector with names
+for (name in wrong_names) {
+  i <- i+1  
+  all_debates <- clean_names(all_debates, old_pattern = name, new_replacement = right_names[i])
+  debate_names[name] <- right_names[i] 
+}
+
+
+# Make "date" a proper date with different columns for day, and year ------------------------------------------------
 all_debates <- all_debates %>% 
-  mutate(date = mdy(date))
+  mutate(date = mdy(date)) %>% 
+  mutate(day = day(date),
+         month = month(date),
+         year = year(date)
+  )
 
-
-# Find all names and save as a tibble ----------------------------------
+# Find all names and save as a tibble --------------------------------------------------------------------------------
 last_name <- str_extract(all_debates$text, "^[A-Z]+:") %>% 
   str_extract("[A-Z]+")
 last_name <- tibble(last_name)
 
 
-# bind column to all debates, left JOIN candidate tibble -----------------------------------------------------------
+# bind column to all debates and fill out every cell in last_name, make all last_names uppercase ------------------------------------------------------------------------------------------
 all_debates <- cbind(all_debates, last_name)
 all_debates <- na.locf(all_debates)
 all_debates %>% 
   mutate(last_name = toupper(last_name))
 
-test <- all_debates %>% 
-  mutate(day = day(date),
-         month = month(date),
-         year = year(date)
-         )
+#Combine the tibble with candidates and the debates by last_name and year ---------------------------------------------
+all_debates <- left_join(all_debates, candidates, by = c("last_name" = "last_name", "year" = "year"))
+all_debates[is.na(all_debates)] <- "not_a_candidate" #fill na's
 
-view(test)
-
-all_debates <- left_join(all_debates, candidates, by = c("last_name" = "last_name", "year" == year(date)))
-
-all_debates$position[all_debates$last_name == "WALLACE" & all_debates$date == "september-29-2020"] <- NA
-all_debates$party[all_debates$last_name == "WALLACE" & all_debates$date == "september-29-2020"] <- NA
-
-all_debates[is.na(all_debates)] <- "not_a_candidate"
-
+# Remove the names from the text --------------------------------------------------------------------------------------
 all_debates <- all_debates %>%  
   mutate(text = str_remove(text, "^[A-Z]+:"))
 
-# reorder columns ---------------------------------------------------------
+# reorder columns ----------------------------------------------------------------------------------------------------
 all_debates <- all_debates %>% 
   relocate(last_name, .before = text)
-# Replace with NA where name=WALLACE and debate=september-29-2020 -------------
-
-# Make "date" a proper date with lubridate --------------------------------
 all_debates <- all_debates %>% 
-  mutate(date = mdy(date))
+  relocate(first_name, .before = last_name)
 
- view(all_debates)
-
-# 
-# test <- all_debates %>% 
-#    select(last_name, date) %>% 
-#     distinct() %>%
-#    group_by(last_name) %>% 
-#    summarise(n = n()) %>% 
-#    filter(n > 2)
-# 
-# view(test) 
-# 
-# test <- all_debates %>% 
-#   select(last_name, date) %>% 
-#   filter(last_name == "BUSH") %>% 
-#   distinct()
-# 
-# test
-
+view(all_debates)
