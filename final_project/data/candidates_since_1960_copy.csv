@@ -1,0 +1,69 @@
+year;party;cand_first_name;candidate_last_name;position
+2020;R;Donald;Trump;president
+2020;D;Joe;Biden;president
+2016;R;Donald;Trump;president
+2016;D;Hillary;Clinton;president
+2012;D;Barack;Obama;president
+2012;R;Mitt;Romney;president
+2008;D;Barack;Obama;president
+2008;R;John;McCain;president
+2004;R;George;W. Bush;president
+2004;D;John;Kerry;president
+2000;R;George;W. Bush;president
+2000;D;Al;Gore;president
+1996;D;Bill;Clinton;president
+1996;R;Bob;Dole;president
+1992;D;Bill;Clinton;president
+1992;R;George H. W.;Bush;president
+1992;I;Ross;Perot;president
+1988;R;George H. W.;Bush;president
+1988;D;Michael;Dukakis;president
+1984;R;Ronald;Reagan;president
+1984;D;Walter;Mondale;president
+1980;R;Ronald;Reagan;president
+1980;D;Jimmy;Carter;president
+1976;D;Jimmy;Carter;president
+1976;R;Gerald;Ford;president
+1972;R;Richard;Nixon;president
+1972;D;George;McGovern;president
+1968;R;Richard;Nixon;president
+1968;D;Hubert;Humphrey;president
+1968;AI;George;Wallace;president
+1964;D;Lyndon;B. Johnson;president
+1964;R;Barry;Goldwater;president
+1960;D;John F.;Kennedy;president
+1960;R;Richard;Nixon;president
+2020;R;Mike;Pence;vice_president
+2020;D;Kamala;Harris;vice_president
+2016;R;Mike;Pence;vice_president
+2016;D;Tim;Kaine;vice_president
+2012;D;Joe;Biden;vice_president
+2012;R;Paul;Ryan;vice_president
+2008;D;Joe;Biden;vice_president
+2008;R;Sarah;Palin;vice_president
+2004;R;Dick;Cheney;vice_president
+2004;D;John;Edwards;vice_president
+2000;R;Dick;Cheney;vice_president
+2000;D;Joe;Lieberman;vice_president
+1996;D;Al;Gore;vice_president
+1996;R;Jack;Kemp;vice_president
+1992;D;Al;Gore;vice_president
+1992;R;Dan;Quayle;vice_president
+1992;I;James;Stockdale;vice_president
+1988;R;Dan;Quayle;vice_president
+1988;D;Lloyd;Bentsen;vice_president
+1984;R;George H. W.;Bush;vice_president
+1984;D;Geraldine;Ferraro;vice_president
+1980;R;George H. W.;Bush;vice_president
+1980;D;Walter;Mondale;vice_president
+1976;D;Walter;Mondale;vice_president
+1976;R;Bob;Dole;vice_president
+1972;R;Spiro;Agnew;vice_president
+1972;D;Sargent;Shriver;vice_president
+1968;R;Spiro;Agnew;vice_president
+1968;D;Edmund;Muskie;vice_president
+1968;AI;Curtis;LeMay;vice_president
+1964;D;Hubert;Humphrey;vice_president
+1964;R;William E.;Miller;vice_president
+1960;D;Lyndon B.;Johnson;vice_president
+1960;R;Henry Cabot;Lodge;vice_president
