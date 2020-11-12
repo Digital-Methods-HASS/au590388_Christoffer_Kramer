@@ -41,7 +41,7 @@ all_debates <- mutate_if(all_debates,
 all_debates <- all_debates[!(all_debates$date == "/voter-education/debate-transcripts/2000-debate-transcripts-translations/"),]
 
 # Find all names and save as a tibble ----------------------------------
-last_name <- str_extract(all_debates$text, "[A-Z]+:") %>% 
+last_name <- str_extract(all_debates$text, "^[A-Z]+:") %>% 
   str_extract("[A-Z]+")
 last_name <- tibble(last_name)
 
@@ -60,7 +60,7 @@ all_debates$party[all_debates$last_name == "WALLACE" & all_debates$date == "sept
 all_debates[is.na(all_debates)] <- "not_a_candidate"
 
 all_debates <- all_debates %>%  
-  mutate(text = str_remove(text, "[A-Z]+:"))
+  mutate(text = str_remove(text, "^[A-Z]+:"))
 
 # reorder columns ---------------------------------------------------------
 all_debates <- all_debates %>% 
