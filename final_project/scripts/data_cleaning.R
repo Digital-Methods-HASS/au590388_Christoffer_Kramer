@@ -48,7 +48,7 @@ for (name in wrong_names) {
 }
 
 
-# Make "date" a proper date with different columns for day, and year ------------------------------------------------
+# Make "date" a proper date with different columns for day, month and year ------------------------------------------------
 all_debates <- all_debates %>% 
   mutate(date = mdy(date)) %>% 
   mutate(day = day(date),

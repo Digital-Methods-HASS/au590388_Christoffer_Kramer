@@ -4,15 +4,14 @@ library(tidyverse)
 library(tidytext)
 library(dplyr)
 library(ggplot2)
-
 #Tokenize by word
 debate_words <- all_debates %>% 
   unnest_tokens(word, text) %>% 
-  count(debate, word, sort = TRUE)
+  count(date, word, sort = TRUE)
 
 #count total words in each debate for td-idf analysis later
 total_words <- debate_words %>% 
-  group_by(debate) %>% 
+  group_by(date) %>% 
   summarise(total = sum(n)) %>% 
   arrange(desc(total))
 
@@ -26,7 +25,7 @@ debate_words <-left_join(debate_words, total_words)
 #   count(word, sort = TRUE)
 
 debate_tf_idf <- debate_words %>% 
-  bind_tf_idf(word, debate, n)
+  bind_tf_idf(word, date, n)
 
 tf <- debate_tf_idf %>% 
   select(-total) %>% 
