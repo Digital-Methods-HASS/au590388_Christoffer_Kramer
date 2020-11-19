@@ -1,0 +1,20 @@
+---
+title: "Noter til mig selv"
+author: "Christoffer Kramer"
+date: "19/11/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Noter til mig selv
+
+Hav nogle scripts, opdel, sæt tal foran, for at vise, hvad der skal køres først
+Tilføj eventuelt et scipt for plots.
+Sæt kun funktioner i et seperat script, hvis du skal bruge det i mange scripts.
+Gør det klart, at der måske er fejl i antagelsen om,at den næste tomme celle er den tidligere taler (transkriptionsfejl).
+Kan måske testes, er der nogle "others", der siger meget?
+
+
