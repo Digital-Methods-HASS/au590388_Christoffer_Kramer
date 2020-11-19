@@ -7,18 +7,19 @@ library(zoo)
 library(stringr)
 library(naniar)
 library(lubridate)
+
+#CHANGE THE REGEX FOR CATCHING NAMES (I DONT WANT MR. OR MS.)!!
+
 # Make list of candidates a tibble ------------------------------------------------
 candidates <- read.csv(file = "data/candidates_since_1960.csv", sep = ";")
 candidates <- tibble(candidates) %>% 
   mutate(last_name = toupper(last_name))
 
 
-
 # Save transcripts as csv and create a tibble --------------------------------------------------------------
 write.csv(all_debates, "data/all_debates.csv", row.names=FALSE)
 all_debates <- read.csv("data/all_debates.csv")
 all_debates <- tibble(all_debates)
-
 
 
 # Clean names in debate column ----------------------------------------------
@@ -57,14 +58,14 @@ all_debates <- all_debates %>%
   )
 
 # Find all names and save as a tibble --------------------------------------------------------------------------------
-last_name <- str_extract(all_debates$text, "^[A-Z]+:") %>% 
+last_name <- str_extract(all_debates$text, "^[A-Za-z]+:") %>% 
   str_extract("[A-Z]+")
 last_name <- tibble(last_name)
-
 
 # bind column to all debates and fill out every cell in last_name, make all last_names uppercase ------------------------------------------------------------------------------------------
 all_debates <- cbind(all_debates, last_name)
 all_debates <- na.locf(all_debates)
+
 all_debates %>% 
   mutate(last_name = toupper(last_name))
 
@@ -73,8 +74,8 @@ all_debates <- left_join(all_debates, candidates, by = c("last_name" = "last_nam
 all_debates[is.na(all_debates)] <- "not_a_candidate" #fill na's
 
 # Remove the names from the text --------------------------------------------------------------------------------------
-all_debates <- all_debates %>%  
-  mutate(text = str_remove(text, "^[A-Z]+:"))
+ all_debates <- all_debates %>%
+   mutate(text = str_remove(text, "^[A-Z]+:"))
 
 # reorder columns ----------------------------------------------------------------------------------------------------
 all_debates <- all_debates %>% 
