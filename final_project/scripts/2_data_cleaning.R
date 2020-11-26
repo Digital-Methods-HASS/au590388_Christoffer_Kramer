@@ -58,9 +58,11 @@ all_debates <- all_debates %>%
   )
 
 # Find all names and save as a tibble --------------------------------------------------------------------------------
-last_name <- str_extract(all_debates$text, "^[A-Za-z]+:") %>% 
+last_name <- str_extract(all_debates$text, "^[A-Za-z]+:|^M[RS]\\..+:") %>% 
+  str_extract("[A-Z]+:") %>% 
   str_extract("[A-Z]+")
 last_name <- tibble(last_name)
+
 
 # bind column to all debates and fill out every cell in last_name, make all last_names uppercase ------------------------------------------------------------------------------------------
 all_debates <- cbind(all_debates, last_name)
@@ -75,7 +77,7 @@ all_debates[is.na(all_debates)] <- "not_a_candidate" #fill na's
 
 # Remove the names from the text --------------------------------------------------------------------------------------
  all_debates <- all_debates %>%
-   mutate(text = str_remove(text, "^[A-Z]+:"))
+   mutate(text = str_remove(text, "^[A-Z]+:|^M[RS]\\..+:"))
 
 # reorder columns ----------------------------------------------------------------------------------------------------
 all_debates <- all_debates %>% 

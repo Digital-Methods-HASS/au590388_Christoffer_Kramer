@@ -8,6 +8,17 @@ output: html_document
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
+```{r}
+library(tidyverse)
+library(tidytext)
+library(dplyr)
+library(ggplot2)
+library(tidyr)
+library(ggwordcloud)
+library(wordcloud)
+library(reshape2)
+library(qdap)
+```
 
 ## Noter til mig selv
 
@@ -16,5 +27,50 @@ Tilføj eventuelt et scipt for plots.
 Sæt kun funktioner i et seperat script, hvis du skal bruge det i mange scripts.
 Gør det klart, at der måske er fejl i antagelsen om,at den næste tomme celle er den tidligere taler (transkriptionsfejl).
 Kan måske testes, er der nogle "others", der siger meget?
+```{r}
+# Tokenize, remove digits, remove uh and uhh ------------------------------
+my_stop_words <- tibble(word = c("uh", "uhh"))
 
+debate_words <- all_debates %>% 
+  unnest_tokens(word, text) %>% 
+  anti_join(my_stop_words) %>% 
+  filter(is.na(as.numeric(word))) %>%
+  count(year, party, word, sort = TRUE)
+
+all_years <- debate_stop_words_removed
+
+# Stop word filtering -------------------------------------------
+debates_stop_words_removed <- debate_words %>% 
+  mutate(word = gsub("\u2019", "'", word)) %>%  
+  anti_join(stop_words) %>% 
+  group_by(year)
+view(debates_stop_words_removed)
+view(debate_stop_words_removed)
+
+#Get a list of all years for plotting and loops
+all_years <- debate_stop_words_removed %>% 
+  select(year) %>% 
+  unique() %>% 
+  arrange(desc(year))
+
+
+
+```
+
+
+```{r}
+
+for (i in all_years) {
+print(i)
+ plot <- debates_stop_words_removed %>%
+    filter(party != "not_a_candidate") %>%
+    filter(party != "I" ) %>%
+    filter(year == i) %>%
+    acast(word ~ party, fun.aggregate = sum, value.var = "n", fill = 0) %>%
+    comparison.cloud(colors = c("gray20", "gray80"),
+                     max.words = 20)
+ print(plot)
+ #(paste(i,"word_cloud.pdf", sep = "_"), width = 65, height = 35, units = "cm")
+}
+```
 
