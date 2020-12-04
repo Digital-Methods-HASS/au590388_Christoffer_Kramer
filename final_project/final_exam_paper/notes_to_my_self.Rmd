@@ -1,0 +1,783 @@
+---
+title: "Noter til mig selv"
+author: "Christoffer Kramer"
+date: "19/11/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+```{r}
+library(tidyverse)
+library(tidytext)
+library(dplyr)
+library(ggplot2)
+library(tidyr)
+library(ggwordcloud)
+library(wordcloud)
+library(reshape2)
+library(qdap)
+```
+
+## Noter til mig selv
+
+Hav nogle scripts, opdel, sæt tal foran, for at vise, hvad der skal køres først
+Tilføj eventuelt et scipt for plots.
+Sæt kun funktioner i et seperat script, hvis du skal bruge det i mange scripts.
+Gør det klart, at der måske er fejl i antagelsen om,at den næste tomme celle er den tidligere taler (transkriptionsfejl).
+Kan måske testes, er der nogle "others", der siger meget?
+```{r}
+# Tokenize, remove digits, remove uh and uhh ------------------------------
+my_stop_words <- tibble(word = c("uh", "uhh"))
+
+debate_words <- all_debates %>% 
+  unnest_tokens(word, text) %>% 
+  anti_join(my_stop_words) %>% 
+  filter(is.na(as.numeric(word))) %>%
+  count(year, party, word, sort = TRUE)
+
+all_years <- debate_stop_words_removed
+
+# Stop word filtering -------------------------------------------
+debates_stop_words_removed <- debate_words %>% 
+  mutate(word = gsub("\u2019", "'", word)) %>%  
+  anti_join(stop_words) %>% 
+  group_by(year)
+view(debates_stop_words_removed)
+view(debate_stop_words_removed)
+
+#Get a list of all years for plotting and loops
+all_years <- debate_stop_words_removed %>% 
+  select(year) %>% 
+  unique() %>% 
+  arrange(desc(year))
+
+
+
+```
+
+
+```{r}
+
+for (i in all_years) {
+print(i)
+ plot <- debates_stop_words_removed %>%
+    filter(party != "not_a_candidate") %>%
+    filter(party != "I" ) %>%
+    filter(year == i) %>%
+    acast(word ~ party, fun.aggregate = sum, value.var = "n", fill = 0) %>%
+    comparison.cloud(colors = c("gray20", "gray80"),
+                     max.words = 20)
+ print(plot)
+ #(paste(i,"word_cloud.pdf", sep = "_"), width = 65, height = 35, units = "cm")
+}
+```
+
+```{r}
+affin_republicans %>%  
+  count(year, value) %>% 
+  ggplot(aes(x = value, y = n)) + 
+  geom_col() +
+  facet_wrap(~year, ncol = 3, scales = "free") +
+  labs(title = "Republicans overall sentiment",
+       x = "sentiment",
+       y = "count")
+
+affin_democrats %>%  
+  count(value) %>% 
+  group_by(year) %>% 
+  ggplot(aes(x = value, y = n)) + 
+  geom_col() +
+  facet_wrap(~year, ncol = 3, scales = "free") +
+    labs(title = "Democrats overall sentiment",
+       x = "sentiment",
+       y = "count")
+
+
+```
+
+
+
+# EKSTRA SHIT
+
+```{r}
+debate_words_party %>% 
+    filter(party == "D") %>% 
+    top_n(20) %>% 
+    ggplot(aes(label = word, size = n)) +
+    geom_text_wordcloud_area(aes(color = n), shape = "diamond") +
+    scale_size_area(max_size = 12) +
+    scale_color_gradientn(colors = c("darkgreen","blue","red")) +
+    theme_minimal()
+
+ggsave("word_cloud_dems.pdf", width = 65, height = 35, units = "cm")
+```
+
+
+
+### Republicans
+```{r, echo=FALSE}
+debates_stop_words_removed %>% 
+  filter(party != "R") %>%
+  group_by(year, party) %>% 
+  top_n(20) %>% 
+  ungroup %>% 
+  ggplot(aes(label = word, size = n)) +
+  geom_text_wordcloud_area(aes(color = n), shape = "diamond") +
+  #scale_size_area(max_size = 12) +
+  scale_color_gradientn(colors = c("darkgreen","blue","red")) +
+  theme_minimal() +
+  facet_wrap(~year, ncol = 3, scales = "free")
+
+ggsave("word_cloud_rep.pdf", width = 65, height = 35, units = "cm")
+```
+
+
+
+```{r}
+debate_words_party %>% 
+    filter(party == "R") %>% 
+    top_n(20) %>% 
+    ggplot(aes(label = word, size = n)) +
+    geom_text_wordcloud_area(aes(color = n), shape = "diamond") +
+    scale_size_area(max_size = 12) +
+    scale_color_gradientn(colors = c("darkgreen","blue","red")) +
+    theme_minimal()
+```
+
+
+### Both Parties
+
+```{r}
+dems <- debates_stop_words_removed %>% 
+  filter(party == "D")
+
+
+reps <- debates_stop_words_removed %>% 
+  filter(party == "R")
+
+
+shared_words <- semi_join(reps, dems, by = c("word" = "word"))
+
+shared_words %>% 
+    top_n(20) %>% 
+    ggplot(aes(label = word, size = n)) +
+    geom_text_wordcloud_area(aes(color = n), shape = "diamond") +
+    scale_size_area(max_size = 12) +
+    scale_color_gradientn(colors = c("darkgreen","blue","red")) +
+    theme_minimal()
+```
+
+```{r}
+
+shared_words_all_years <- semi_join(reps, dems, by = c("word" = "word"))
+
+debates_stop_words_removed %>% 
+    group_by(year) %>% 
+    top_n(20) %>% 
+    ungroup %>% 
+    ggplot(aes(label = word, size = n)) +
+    geom_text_wordcloud_area(aes(color = n), shape = "diamond") +
+    scale_size_area(max_size = 12) +
+    scale_color_gradientn(colors = c("darkgreen","blue","red")) +
+    theme_minimal() +
+    facet_wrap(~year, ncol = 2, scales = "free")
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+
+## TF_IDF all debates
+```{r}
+total_words_all <- all_debates %>% 
+  unnest_tokens(word, text) %>% 
+  count(year, word, sort = TRUE) %>% 
+  group_by(year) %>% 
+  summarise(total = sum(n))
+
+words_count <- all_debates %>% 
+  unnest_tokens(word, text) %>% 
+  count(year, word, sort = TRUE) %>% 
+  left_join(total_words_all, by = "year")
+
+words_count
+
+
+words_tf_idf <- words_count %>% 
+  bind_tf_idf(word, year, n) 
+
+words_tf_idf
+```
+
+### Plot all_debates
+```{r}
+words_tf_idf %>% 
+  arrange(desc(tf_idf)) %>% 
+  group_by(year) %>% 
+  top_n(20) %>% 
+    ungroup %>% 
+    ggplot(aes(label = word, size = tf_idf)) +
+    geom_text_wordcloud_area(aes(color = tf_idf), shape = "diamond") +
+    scale_size_area(max_size = 12) +
+    scale_color_gradientn(colors = c("darkgreen","blue","red")) +
+    theme_minimal() +
+    facet_wrap(~year, ncol = 3, scales = "free")
+
+ggsave("word_cloud_tf_idf.pdf", width = 65, height = 35, units = "cm")
+```
+
+### TF R and D
+
+```{r}
+total_words_all <- all_debates %>% 
+  filter(party != "I") %>% 
+  filter(party != "not_a_candidate") %>% 
+  unnest_tokens(word, text) %>% 
+  count(party, word, sort = TRUE) %>% 
+  group_by(party) %>% 
+  summarise(total = sum(n))
+
+words_count <- all_debates %>% 
+  filter(party != "I") %>% 
+  filter(party != "not_a_candidate") %>%  
+  unnest_tokens(word, text) %>% 
+  count(party, word, sort = TRUE) %>% 
+  left_join(total_words_all, by = "party")
+
+
+
+words_tf_idf <- words_count %>% 
+  bind_tf_idf(word, party, n) 
+
+words_tf_idf %>% 
+  arrange(desc(tf_idf)) %>% 
+  group_by(party) %>% 
+  top_n(50) %>% 
+    ungroup %>% 
+    ggplot(aes(label = word, size = tf_idf)) +
+    geom_text_wordcloud_area(aes(color = tf_idf), shape = "diamond") +
+    scale_size_area(max_size = 12) +
+    scale_color_gradientn(colors = c("darkgreen","blue","red")) +
+    theme_minimal() +
+    facet_wrap(~party, ncol = 2, scales = "free")
+
+
+
+
+```
+
+### TF All
+```{r}
+total_words_all <- all_debates %>% 
+  unnest_tokens(word, text) %>% 
+  filter(!grepl("[[:digit:]]", word)) %>% #Remove digits (digits seperated with commas included e.g. 1,000)
+  count(party, word, sort = TRUE) %>% 
+  group_by(party) %>% 
+  summarise(total = sum(n))
+
+words_count <- all_debates %>% 
+  unnest_tokens(word, text) %>% 
+  filter(!grepl("[[:digit:]]", word)) %>% #Remove digits (digits seperated with commas included e.g. 1,000)
+  count(party, word, sort = TRUE) %>% 
+  left_join(total_words_all, by = "party")
+
+
+
+words_tf_idf <- words_count %>% 
+  bind_tf_idf(word, party, n) 
+
+words_tf_idf %>% 
+  arrange(desc(tf_idf)) %>% 
+  group_by(party) %>% 
+  top_n(50) %>% 
+    ungroup %>% 
+    ggplot(aes(label = word, size = tf_idf)) +
+    geom_text_wordcloud_area(aes(color = tf_idf), shape = "diamond") +
+    scale_size_area(max_size = 12) +
+    scale_color_gradientn(colors = c("darkgreen","blue","red")) +
+    theme_minimal() +
+    facet_wrap(~party, ncol = 2, scales = "free")
+
+```
+
+## Sentiment analysis
+### Afinn
+
+```{r}
+dems <- all_debates %>% 
+  filter(party == "D") %>% 
+  unnest_tokens(word, text) %>% 
+  filter(!grepl("[[:digit:]]", word)) %>%
+  count(party, word, sort = TRUE)
+  
+reps <- all_debates %>% 
+ filter(!grepl("[[:digit:]]", word)) %>%
+  unnest_tokens(word, text) %>% 
+  filter(is.na(as.numeric(word))) %>%
+  count(party, word, sort = TRUE)
+
+# Affin Democrats and Republicans -----------------------------------------
+affin_R <- reps %>% 
+  inner_join(get_sentiments("afinn"))
+
+affin_D <- dems %>% 
+  inner_join(get_sentiments("afinn"))
+```
+
+
+```{r}
+# Plot Afinn --------------------------------------------------------------
+affin_R_plot <- affin_R %>% 
+  count(value) %>% 
+  ggplot(aes(x = value, y = n)) + 
+  geom_col()
+affin_R_plot
+```
+
+
+```{r}
+affin_D_plot <- affin_D %>% 
+  count(value) %>% 
+  ggplot(aes(x = value, y = n)) + 
+  geom_col()
+affin_D_plot
+```
+
+###Afinn all years Democrats
+```{r}
+dems <- all_debates %>% 
+  filter(party == "D") %>% 
+  unnest_tokens(word, text) %>% 
+  filter(is.na(as.numeric(word))) %>%
+  count(party, year, word, sort = TRUE) %>% 
+  inner_join(get_sentiments("afinn"))
+  
+
+affin_D_plot <- dems %>% 
+  group_by(year) %>% 
+  count(value) %>% 
+  ggplot(aes(x = value, y = n)) + 
+  geom_col() +
+  facet_wrap(~year, ncol = 3, scales = "free")
+affin_D_plot
+
+
+
+
+```
+
+###Afinn all years republicans
+```{r}
+reps <- all_debates %>% 
+  filter(party == "R") %>% 
+  unnest_tokens(word, text) %>% 
+  filter(is.na(as.numeric(word))) %>%
+  count(party, year, word, sort = TRUE) %>% 
+  inner_join(get_sentiments("afinn"))
+
+affin_R_plot <- dems %>% 
+  group_by(year) %>% 
+  count(value) %>% 
+  ggplot(aes(x = value, y = n)) + 
+  geom_col() +
+  facet_wrap(~year, ncol = 3, scales = "free")
+affin_D_plot
+```
+
+### NRC
+```{r}
+# NRC ---------------------------------------------------------------------
+nrc_R <- dems %>% 
+  inner_join(get_sentiments("nrc"))
+
+nrc_D <- reps %>% 
+  inner_join(get_sentiments("nrc"))
+
+# Plot NRC ----------------------------------------------------------------
+ggplot(data = nrc_R, aes(x = sentiment, y = n)) +
+  geom_col()
+
+ggplot(data = nrc_D, aes(x = sentiment, y = n)) +
+  geom_col()
+```
+
+
+### NRC all years dems
+```{r}
+dems <- all_debates %>% 
+  filter(party == "D") %>% 
+  unnest_tokens(word, text) %>% 
+  filter(is.na(as.numeric(word))) %>%
+  count(party, year, word, sort = TRUE) %>% 
+  inner_join(get_sentiments("nrc"))
+
+dems %>% 
+  group_by(year) %>% 
+  count(sentiment) %>% 
+  ggplot(aes(x = sentiment, y = n)) + 
+  geom_col() +
+  facet_wrap(~year, ncol = 3, scales = "free")
+
+```
+
+
+### NRC all years reps
+```{r}
+reps <- all_debates %>% 
+  filter(party == "R") %>% 
+  unnest_tokens(word, text) %>% 
+  filter(is.na(as.numeric(word))) %>%
+  count(party, year, word, sort = TRUE) %>% 
+  inner_join(get_sentiments("nrc"))
+
+reps %>% 
+  group_by(year) %>% 
+  count(sentiment) %>% 
+  ggplot(aes(x = sentiment, y = n)) + 
+  geom_col() +
+  facet_wrap(~year, ncol = 3, scales = "free")
+
+```
+
+
+
+###BING
+
+```{r}
+# bing --------------------------------------------------------------------
+bing_R <- reps %>% 
+  inner_join(get_sentiments("bing"))
+
+bing_D <- dems%>% 
+  inner_join(get_sentiments("bing"))
+
+# Plot bing ---------------------------------------------------------------)
+ggplot(data = bing_R, aes(x = sentiment, y = n)) +
+  geom_col()
+
+ggplot(data = bing_D, aes(x = sentiment, y = n)) +
+  geom_col()
+
+
+```
+### BING all years dems
+```{r}
+dems <- all_debates %>% 
+  filter(party == "D") %>% 
+  unnest_tokens(word, text) %>% 
+  filter(is.na(as.numeric(word))) %>%
+  count(party, year, word, sort = TRUE) %>% 
+  inner_join(get_sentiments("bing"))
+
+dems %>%
+  group_by(year) %>% 
+  count(sentiment) %>% 
+  ggplot(aes(x = sentiment, y = n)) + 
+  geom_col() +
+  facet_wrap(~year, ncol = 3, scales = "free")
+
+```
+
+
+### BING all years reps
+```{r}
+reps <- all_debates %>% 
+  filter(party == "R") %>% 
+  unnest_tokens(word, text) %>% 
+  filter(is.na(as.numeric(word))) %>%
+  count(party, year, word, sort = TRUE) %>% 
+  inner_join(get_sentiments("bing"))
+
+reps %>%
+  group_by(year) %>% 
+  count(sentiment) %>% 
+  ggplot(aes(x = sentiment, y = n)) + 
+  geom_col() +
+  facet_wrap(~year, ncol = 3, scales = "free")
+```
+
+
+
+## NETWORKS
+
+
+
+## Ekstra shit
+```{r}
+# debates_only_R_and_D <- debates_stop_words_removed %>%
+#     filter(party != "not_a_candidate") %>%
+#     filter(party != "I" ) 
+# 
+# # print(all_years)
+# # for (i in seq_along(all_years)) {
+# #   print(i)
+# # # data <-  debates_only_R_and_D %>%
+# # #     filter(year == i) %>%
+# # #    acast(word ~ party, fun.aggregate = sum, value.var = "n", fill = 0)
+# # # print(data)
+# # }
+# 
+# test <- 
+#   debates_only_R_and_D %>% 
+#   split(.$year)
+# 
+# # test %>% 
+# #   walk(print)
+# # 
+# # test
+# # walk(all_years, debates_only_R_and_D %>% 
+# #     acast(word ~ party, fun.aggregate = sum, value.var = "n", fill = 0) %>% 
+# #     comparison.cloud(colors = c("blue", "red"),
+# #                      max.words = 20))
+# # 
+# 
+# # map()
+# test1 <- all_debates$year %>% unique()
+# test1 <- c(test1)
+# test1 <- all_debates[["year"]]
+# test1 <- test1 %>%  unique()
+# test1 <- c(test1)
+# test1
+# length(test1)
+# 
+# for (i in test) {
+# label_year <- i$year %>% unique()
+#  i %>%
+#  acast(word ~ party, value.var = "n", fill = 0) %>%
+#  comparison.cloud(colors = c("blue", "red"),
+#  max.words = 20,
+#  scale = c(2,0.25),
+#  title.size = 1,
+#  random.order = TRUE,
+#  match.colors = TRUE)
+# 
+# #ggsave(paste(j,"word_cloud.png", sep = "_"), width = 65, height = 35, units = "cm")
+# }
+# 
+#  testing <- i %>%
+#     acast(word ~ party, fun.aggregate = sum, value.var = "n", fill = 0)
+#   view(testing)
+#   
+#   
+#   for(i in test1){
+#     
+#     debates_stop_words_removed %>% 
+#       filter(part == "D")
+#     
+#    acast(word ~ party, fun.aggregate = sum, value.var = "n", fill = 0) %>%
+#    comparison.cloud(colors = c("blue", "red"),
+#    max.words = 50,
+#    scale = "c(2,0.25)",
+#    title.size = 1,
+#    random.order = FALSE,
+#    match.colors = TRUE)
+#     }
+# 
+#  ggsave("word_cloud_test.pdf", width = 65, height = 35, units = "cm")
+# all_years <- all_debates %>% 
+#   filter(party == "R")
+# 
+# test <- all_debates %>% 
+#   unnest_tokens(word, text) %>% 
+#   anti_join(my_stop_words) %>% 
+#   filter(is.na(as.numeric(word))) %>%
+#   count(word, sort = TRUE)
+# 
+# 
+# test <- test %>% 
+#   mutate(word = gsub("\u2019", "'", word)) %>%  
+#   anti_join(stop_words)
+# 
+# 
+# # test <- debates_only_R_and_D %>% acast(word ~ n, value.var = "n", fill = 0) 
+# # view(test)
+# wordcloud2(test)
+# view(data)
+
+# 
+# debate_words_party <- all_debates %>% 
+#   unnest_tokens(word, text) %>% 
+#   anti_join(my_stop_words) %>% 
+#   filter(is.na(as.numeric(word))) %>%
+#   count(party, word, sort = TRUE) %>% 
+#   mutate(word = gsub("\u2019", "'", word)) %>%  
+#   anti_join(stop_words)
+# 
+# # Stop word filtering -------------------------------------------
+# debates_stop_words_removed <- debate_words %>% 
+#   mutate(word = gsub("\u2019", "'", word)) %>%  
+#   anti_join(stop_words)
+# 
+# 
+# test <- debates_stop_words_removed %>% 
+#   group_by(word) %>% 
+#   summarise(word_n = n())
+#   view(debate_words_party)
+#Get a list of all years for plotting and loops
+# all_years <- map_dbl((debates_stop_words_removed %>% 
+#   select(year) %>% 
+#   unique() %>% 
+#   arrange(desc(year))))
+# 
+# map_dbl()
+# all_years
+
+
+```
+
+```{r}
+splitted_by_year_position_included <- all_debates %>% 
+  unnest_tokens(word, text) %>% 
+  filter(!grepl("[[:digit:]]", word)) %>% #Remove digits (digits seperated with commas included e.g. 1,000)
+  count(year, position, party, word, sort = TRUE) %>% 
+  mutate(word = gsub("\u2019", "'", word)) %>%  #Make read it as unix
+  anti_join(stop_words) %>% 
+  anti_join(my_stop_words) %>% 
+  split(.$year)
+  
+  for (df in splitted_by_year_position_included) {
+
+plot_presidents_democrats <-  df %>%
+  filter(party == "D") %>%
+  filter(position == "president") %>% 
+    plot_wordclouds() +
+  labs(title = "Democrats",
+       subtitle = unique(df$year))
+
+plot_presidents_republicans <-  df %>%
+  filter(party == "R") %>%
+  filter(position == "president") %>% 
+    plot_wordclouds() +
+  labs(title = "Republicans",
+       subtitle = unique(df$year))
+
+  print(plot_presidents_democrats)
+  print(plot_presidents_republicans)
+
+  
+}
+
+
+```
+
+
+
+```{r pressure, echo=FALSE}
+splitted_by_year <- stop_words_removed %>% 
+  split(.$year)
+
+for (df in splitted_by_year) {
+
+plot_democrats <-  df %>%
+  filter(party == "D") %>%
+    plot_wordclouds() +
+  labs(title = "Democrats",
+       subtitle = unique(df$year))
+
+plot_republicans <-  df %>%
+  filter(party == "R") %>%
+    plot_wordclouds() +
+  labs(title = "Republicans",
+       subtitle = unique(df$year))
+
+  print(plot_democrats)
+  print(plot_republicans)
+
+  
+}
+```
+
+```{r}
+word_tf_idf_splitted_by_year <- word_tf_idf %>%
+  split(.$year)
+for (df in word_tf_idf_splitted_by_year) {
+ plot <- plot_wordclouds(data_set = df)
+print(plot)
+ }  
+
+```
+
+```{r}
+
+
+democrats <- debate_words %>% 
+  filter(party == "D") %>% 
+  inner_join(get_sentiments("afinn")) %>% 
+  inner_join(get_sentiments("bing"))
+
+
+republicans <- debate_words %>% 
+  filter(!grepl("[[:digit:]]", word)) %>%
+  count(word, sort = TRUE) %>% 
+  inner_join(get_sentiments("afinn")) %>% 
+  inner_join(get_sentiments("bing"))
+
+
+```
+
+
+
+```{r}
+
+sentiment_debate_words %>% 
+  filter(party == "D") %>%  
+  filter(year >= 1992) %>% 
+  group_by(year) %>% 
+  count(value) %>% 
+  ggplot(aes(x = value, y = n)) + 
+  geom_col() +
+  facet_wrap(~year, ncol = 3, scales = "fixed")+
+  labs(title = "Democrats sentiment each year - AFINN",
+       x = "sentiment",
+       y = "count")
+
+sentiment_debate_words %>% 
+  filter(party == "R") %>% 
+  filter(year >= 1992) %>% 
+  group_by(year) %>% 
+  count(value) %>%
+  ggplot(aes(x = value, y = n)) + 
+  geom_col() +
+  facet_wrap(~year, ncol = 3, scales = "fixed")+
+  labs(title = "Republicans sentiment each year - AFINN",
+       x = "sentiment",
+       y = "count")
+
+
+sentiment_debate_words %>% 
+  filter(year >= 1992) %>% 
+  group_by(year) %>% 
+  count(value) %>% 
+  ggplot(aes(x = value, y = n)) + 
+  geom_col() +
+  facet_wrap(~year, ncol = 3, scales = "fixed") +
+  labs(title = "Overall sentiment each year - AFINN",
+       x = "sentiment",
+       y = "count")
+
+
+```
+
+# Cleaning
+
+Then I make a list of correct dates, which have the same index
+```{r cleaning dates}
+#Make a list of correct dates
+right_dates <- c("october-7-2020", "september-26-2008", "october-2-2008", "september-26-2008")
+```
+
+```{r find dates}
+#Remove translations page from list of dates and the dataset
+debate_dates <- debate_dates[!(debate_dates == "/voter-education/debate-transcripts/2000-debate-transcripts-translations/")]
+all_debates <- all_debates[!(all_debates$date == "/voter-education/debate-transcripts/2000-debate-transcripts-translations/"),]
+```
+
+```{r cleaning dates loop}
+i <- 0 #Index
+#Loop through every wrong date and replace it with a name from the vector "right_dates" in all_debates and the vector debate_dates
+for (date in wrong_dates) {
+  i <- i+1  
+  all_debates <- clean_dates(all_debates, old_pattern = date, new_replacement = right_dates[i])
+  debate_dates[date] <- right_dates[i] 
+}
+```

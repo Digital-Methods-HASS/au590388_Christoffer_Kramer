@@ -1,0 +1,772 @@
+---
+title: "final Project"
+author: "Christoffer M. Kramer"
+date: "26/11/2020"
+output:
+  html_document:
+    df_print: paged
+  pdf_document: default
+  word_document: default
+---
+
+```{r setup, echo=FALSE, message=FALSE, warning=FALSE}
+knitr::opts_chunk$set(
+  echo = TRUE,
+  message = FALSE,
+  warning = FALSE
+)
+```
+
+# Introduction
+In this paper, I will examine how democratic and republican presidential and vice-presidential candidates have changed their rhetoric during election debates since 1960. This is done by text-mining debate transcripts from the *The Commission on Presidential Debates'* [website](https://www.debates.org/). By combining simple text-mining techniques, such as sentiment analysis, stop-word filtering, and tf-idf, with visualizations, I'm gonna do an exploratory analysis of the debates. This is done with the aim of investigating, how the discourse during presidential debates have changed. Since my current major is social anthropology, I'm gonna use an inductive approach, which is a traditional ethnographic method This paper concludes by discussing how data-science and distant reading can be used as a starting point for a traditional anthropological discourse analysis. 
+
+**Additional information**
+* _Libraries:_ I'm gonna use the following libraries:
+
+```{r load libraries,}
+library(tidyverse) #Cleaning data
+library(tidytext) #Text-mining
+library(ggplot2) #Plotting
+library(ggwordcloud) #Plotting word clouds
+library(rvest)  #Web scraping
+library(lubridate) #Cleaning Dates
+library(zoo) #Dealing with na's
+library(reshape2) #transform text to term document matrix
+library(wordcloud) #Make comparison and commonality word clouds
+```
+
+*License: I contacted The Commission on Presidential Debates and asked for permission to use their transcripts. They informed me, that the transcripts are in the public domain. 
+
+* _Repository and metadata:_ My scripts and data are stored on [this github repository](https://github.com/Digital-Methods-HASS/au590388_Christoffer_Kramer/tree/master/final_project).Relevant metadata are provided in the readme file. 
+
+* _figures:_ All figures and plots will be provided in an appendix, in case the reader wish to explore them further.
+
+# Web scraping
+I need to get web-scrape each transcript since 1960. This is done in the code chunk below. For an explanation of this code see pp. X-X, FIXME, or [my github repository for that portfolio](https://github.com/Digital-Methods-HASS/au590388_Christoffer_Kramer/tree/master/learning_journal_and_assignments/week_44_webscrape). 
+
+```{r - web scraping_vect_link}
+# Scrape Debate function --------------------------------------------------
+scrape_debates <- function(website) {
+  p_html <-  read_html(website) %>%
+    html_nodes("p") %>%
+    html_text()
+
+  vect_p_html <- c(p_html) #Save the output in a vector.
+}
+
+# Get and store links to debates ---------------------------------------------------
+link_html <- read_html("https://www.debates.org/voter-education/debate-transcripts/") %>%
+  html_nodes("blockquote") %>%
+  html_children() %>%
+  html_nodes("a")  %>%
+  html_attr("href")
+
+vect_link <- c(link_html) #save the output in a vector
+vect_link #Check output
+```
+
+When I wrote the portfolio on web scraping, the transcripts for the 2020 debates had not yet been uploaded. Now that they have, they need some additional cleaning. I will, therefore, remove the hostname ("https://www.debates.org/) from the strings and replace them with the path to each transcript.
+
+```{r web scraping clean links}
+#Clean messy links
+vect_link[1] <- "/voter-education/debate-transcripts/september-29-2020-debate-transcript/"
+vect_link[2] <- "/voter-education/debate-transcripts/vice-presidential-debate-at-the-university-of-utah-in-salt-lake-city-utah/"
+vect_link[3] <- "/voter-education/debate-transcripts/october-22-2020-debate-transcript/"
+```
+
+This code chunk below is explained in my previous portfolio on web-scraping, see pp. X-X, FIXME, or [my github repo for that portfolio](https://github.com/Digital-Methods-HASS/au590388_Christoffer_Kramer/tree/master/learning_journal_and_assignments/week_44_webscrape). 
+I have made two changes, since I wrote my last portfolio. Rather than creating a new object for each debate transcripts, I start by creating an empty tibble called *all_debates_raw* and row bind each debate transcript. I also removed the vector *debate_names*, since the row-binding makes it redundant. 
+
+```{r web scraping for loop}
+# Loop through the links and store the content ----------------------------
+all_debates_raw <- tibble()
+
+for (link in vect_link[!is.na(vect_link)]) {
+  date <- str_extract(link, "[A-Za-z]+-\\d+-\\d+")
+
+ if(is.na(date)) {
+
+  date <- str_extract(link, ".+")
+
+ } #end if
+
+  website <- paste0("https://www.debates.org/", link)
+  debate <- scrape_debates(website) #create an object storing the transcript
+  debate <- tibble(line = 1:length(debate), text = debate, date = date)
+  all_debates_raw <- bind_rows(all_debates_raw, debate) #row bind the transcript to all_debates 
+} #end loop
+```
+
+In order to make my data reproducible, I will save my results from the web-scraping, which is currently stored in the object *all_debates_raw*, in a csv-file. By doing this, I can make sure, that my data stays intact even if the website debates.org ceases to exist:
+```{r web scraping for loop}
+write.csv(all_debates_raw, "./data/all_debates_raw.csv", row.names=FALSE) #Save as csv
+```
+
+# Data Cleaning and Data Wrangling
+I have created a data set called "candidates_since 1960.csv", which contains a list of presidential and vice presidential candidates since 1960. This data set will be used for data wrangling. In order to keep my raw data intact, I will save it in an object called *candidates*. After that I transform the *candidates* to a *tibble*, since I prefer tibbles over base R's *data.frame*. Lastly, I mutate all last names to upper case. This is done because each speaker in the transcripts is identified with their last name written in uppercase. By writing all names in uppercase it will therefore be easier to match their last name in the transcripts using a regex.
+```{r create tibble candidates}
+candidates <- read.csv(file = "./data/candidates_since_1960.csv", sep = ";") #Load csv
+candidates <- tibble(candidates) %>%  #make data frame a tibble.
+  mutate(last_name = toupper(last_name)) #Make all names uppercase
+```
+
+This data_set provides every year a candidate ran, their first name, their last name, and their position (president or vice_president).
+
+Lastly, I create the tibble *all_debates* which contains the csv file *all_debates_raw.csv*.
+```{r create tibble transcripts}
+# Save transcripts as csv and create a tibble --------------------------------------------------------------
+all_debates <- read.csv("./data/all_debates_raw.csv") #load csv
+all_debates <- tibble(all_debates) #make data frame a tibble
+```
+
+This data set still needs a lot of cleaning, in order to follow Hadley Wickhams principles for tidy data (Wickham, 2014). The data does not tell, who is speaking or at what their party affiliation is. Moreover, the dates do not follow the datacarpetry's recommendation of seperating year, month and day into seperate column (datacarpentry.org, n.d.). 
+
+## Cleaning dates
+I will start the data wrangling by cleaning the dates. this is done by creating a function. This function only works if the provided data is a string. It uses str_replace_all to replace a pattern with a new string.  
+```{r cleaning clean dates function}
+#Functions that cleans names by replacing an existing string with a new string
+#Will only mutate if the provided data is a string.
+clean_dates <- function(dataset, old_pattern, new_replacement) {
+  mutate_if(dataset,
+            is.character,
+            str_replace_all, pattern = old_pattern, replacement = new_replacement)
+}
+```
+
+Now I need to find all dates, which are wrong. I can does not match a regex with the function *filter* from the *tidyverse* package (Wickham et al., 2019)  and *grepl*. This regex is the same, as the one used in the previous loop. However with the *!* operator, it inverts the regex, thereby returning strings that do not follow the structure of "month-day-year" (e.g. "october-20-2020"). I then store the output in an object called *wrong names*.
+```{r find dates}
+#Find the wrong dates
+wrong_dates <- all_debates %>% 
+  filter(!grepl("[A-Za-z]+-\\d+-\\d+", date)) %>%
+  select(date) %>% 
+  unique()
+```
+
+Let's check out *wrong_dates*.
+```{r wrong_dates check}
+wrong_dates
+```
+
+There 4 wrong dates 3 of them don't include a date, and the last is a link to the translations of the debate_transcripts.
+Firstly I remove the translation page from *all_debates*:
+```{r remove translation}
+#Remove translations page from list of dates and the dataset
+all_debates <- all_debates[!(all_debates$date == "/voter-education/debate-transcripts/2000-debate-transcripts-translations/"),]
+```
+
+Then I replace the wrong dates with the correct dates using my function *clean_dates*. 
+```{r replace wrong dates}
+#Replace wrong date with correct date
+all_debates <- clean_dates(all_debates, old_pattern = "voter-education/debate-transcripts/vice-presidential-debate-at-the-university-of-utah-in-salt-lake-city-utah/",
+                           new_replacement = "october-7-2020")
+
+all_debates <- clean_dates(all_debates, old_pattern ="/voter-education/debate-transcripts/2008-debate-transcript/",
+                           new_replacement = "september-26-2008")
+
+all_debates <- clean_dates(all_debates, old_pattern ="/voter-education/debate-transcripts/2008-debate-transcript-2/",
+                           new_replacement = "october-2-2008")
+```
+
+Let's check out the result:
+```{r}
+all_debates$date %>% 
+  unique()
+```
+
+It appears to be working. However, I still need to seperate day, month, and year, into different columns. This is done with the lubridate package (Grolemund & Wickham, 2011):
+```{r cleaning dates with lubridate}
+# Make "date" a proper date with different columns for day, month and year ------------------------------------------------
+all_debates <- all_debates %>% 
+  mutate(date = mdy(date)) %>% 
+  mutate(day = day(date),
+         month = month(date),
+         year = year(date)
+  )
+```
+
+Now I'm ready to differentiate between speakers.
+
+## Who is speakning?
+In the transcript Different speakers are marked the following way: "LAST_NAME: Speech". So When Donald Trump speaks it is marked like this: "TRUMP: ...". When no names are applied it is always the last named speaker who is talking. 
+However, in the older debates speakers are referred to as MR. or MS. , and some speakers have lowercase letters in their names (e.g. the moderator "McGee" ). 
+In order to extract all speakers, I use a series str_extract and a regexes to remove semicolon and MR. or MS., I then save the result as a tibble in an object called *last_name*.
+```{r cleaning extract names}
+# Find all names and save as a tibble
+last_name <- str_extract(all_debates$text, "^[A-Za-z]+:|^M[RS]\\..+:") %>% #Find name
+  str_extract("[A-Za-z]+:") %>% #remove MR. and MS.
+  str_extract("[A-Za-z]+") #Remove semicolon
+last_name <- tibble(last_name) #Make last_name a tibble
+```
+
+Then I combine the columns of *all_debates* and *last_name*.
+```{r cleaning bind names}
+# bind column to all debates
+all_debates <- cbind(all_debates, last_name)
+```
+
+Let's check it out:
+```{r checking bind names}
+head(all_debates) %>% 
+  select(line,last_name)
+```
+
+The names "Participants" and "Moderator", are a result of every transcript starting with a declaration of who is moderation and who is participating. These are dealt with later. There are some NA's. However, these are easily explained. The first NA's are because no one has spoken yet. The NA after "WALLACE" is because Wallace is still speaking. Every time a speaking is not mentioned, it is the last named speaker who is speaking. Therefore by replacing all NA's with the previous known value, it is possible to assign a speaker to each line. This is done with the function *na.locf* from the *zoo* package (Zeileis & Grothendieck, 2005).
+```{r nalocf}
+all_debates <- na.locf(all_debates) #and fill out every cell
+```
+
+Lastly, I transform all Last_names to Uppercase so I can do a left_join.
+```{r toupper names}
+all_debates <- all_debates %>% 
+  mutate(last_name = toupper(last_name)) # Make all last_names uppercase 
+```
+
+Then I left_join *all_debates* with *candidates* by column *last_name* and *year*. Then I replace all NA's with the string "not_a_candidate", everywhere. This is done in order to follow Broman and Woo's principles of data organization in spreadsheets, which, among other, states, that NA's should not be included in spreadsheets (Broman & Woo: 4, 2018).  
+```{r cleaning combine tibbles}
+#Left_join candidates and all_debates by last_name and year
+all_debates <- left_join(all_debates, candidates, by = c("last_name" = "last_name", "year" = "year"))
+all_debates[is.na(all_debates)] <- "not_a_candidate" #fill NA's
+```
+
+Now in, order to not have the declarition of each speaker influence my analysis, I'm going to use the same regex as previously for finding names, and then remove them, using the function **str_remove**. 
+```{r cleaning remove names}
+# Remove the names from the text
+ all_debates <- all_debates %>%
+   mutate(text = str_remove(text, "^[A-Za-z]+:|^M[RS]\\..+:"))
+```
+
+Lastly, I will reorder the columns so *first_name* and *last_name* are placed in front of the text. This is purely an aestethic choice. 
+```{r cleaning reorder columns}
+# Reorder columns
+all_debates <- all_debates %>% 
+  relocate(last_name, .before = text)
+#Reorder columns
+all_debates <- all_debates %>% 
+  relocate(first_name, .before = last_name)
+
+```
+
+Now let's check the result:
+```{r Check cleaning}
+head(all_debates)
+```
+Now my data set follows a nice and tidy structure, where I can differentiate between speakers. This will make the analysis and plotting easier. 
+
+# Text-mining 
+I will do three types text-mining: *tf-idf*, *sentiment analysis*, and *stop word filtering*. I'm mainly inspired by Julia Silge and David Robinsons approach to text-mining in their book: "Text Mining with R: A Tidy Approach" (2020). Therefore, I'm gonna use the the t   Since I'm gonna be making a lot of plots, I will make a function for saving my plots. This will make writing the code easier, and it will make it easier to combine all pdf files into one big appendix file, since they all have the same size. 
+```{r}
+save_plot_pdf <- function(name, path_destination = "../plots/", width_value = 8.26, height_value = 11.69){
+  dev.copy(pdf, paste(path_destination, name, ".pdf", sep = ""), width= width_value, height= height_value) #Units are inches
+  dev.off()
+}
+
+```
+
+I'm also gonna make a lot of word clouds. Therefore, I will make a custom function, which does this for me. Most parameters have a default value, which will make it a lot easier to plot, but still give me the opportunity to customize the plot. 
+```{r plotting worcloud function}
+
+plot_wordclouds <- function(data_set, label_value = word, size_value = n, max_size = 10, color_value = n, shape_value ="diamond") {
+    ggplot(data_set, aes(label = {{label_value}}, size = {{size_value}})) +
+    geom_text_wordcloud_area(aes(color = {{color_value}}), shape = shape_value) +
+    scale_size_area(max_size) +
+    theme_minimal()    
+    }
+```
+
+Lastly, I'm gonna make a lot of comparison clouds. Again I make a custom function with a lot of default values for the parameters.
+```{r plot comparison clouds function}
+create_comparison_cloud <- function(data_set,  title_value = "", color_values = c("darkred", "darkgreen"), title_bg_colors = color_values, title_text_colors = c("white")) {
+  data_set %>% 
+  comparison.cloud(colors = color_values,
+                   random.order = FALSE, 
+                   scale = c(2, 0.2),
+                   title.bg.colors = title_bg_colors,
+                   title.colors = title_text_colors,
+                   title.size = 1) +
+title(main = title_value, line = 1)
+  
+}
+```
+
+## Tokenizing
+I will start out by creating a tibble called *my_stop_words*, which contains stopwords that are often used in transcripts, but not part of a lexicon.  Then I tokenize the text by word. This is done with the **unnest_tokens** function in the tidytext package (Silge & Robinson, 2016). This ensures that my data set still follows the tidy format, but now each row represents a word (Silge & Robinson, 2017). After that I'm using a regex to filter out digits, and then, using anti_join, I'm filtering out rows that matches *my_stop_words*. The output is saved in the object *debate_words*. 
+```{r Tokenize by word}
+my_stop_words <- tibble(word = c("uh", "uhh")) #custom stop words
+
+debate_words <- all_debates %>% 
+  unnest_tokens(word, text) %>% 
+  filter(!grepl("[[:digit:]]", word)) %>%  #Remove digits
+  anti_join(my_stop_words)
+```
+
+
+## Stop word filtering
+Most of the debates uses a single right quotation mark, rather than an apostrophe. This causes problems, when using the anti_join. Therefore, Luckily, I found an answer to this problem in [this stack overflow question](https://stackoverflow.com/questions/47209828/r-tidytext-stop-words-are-not-filtering-consistently-from-gutenbergr-downloads). The second line mutate single right quotation marks to apostrophes. 
+Lastly I do a standard anti_join.
+```{r stop word filtering}
+stop_words_removed <- debate_words %>% 
+  mutate(word = gsub("\u2019", "'", word)) %>%  #Make read it at unix
+  anti_join(stop_words)
+```
+Now that each stop word has been filtered out, I'm ready for my exploratory analysis. 
+
+### Plotting Stop word filtering
+
+Let's try filtering out the democrats and counting each word in each year, and then pipe it into my function *plot_wordclouds*, which will be faceted by year, 
+```{r plotting democrats wordcloud stop words, fig.cap="Fig. 1: Stop Word Filtering - Democrats"}
+stop_words_removed %>% 
+  filter(party == "D") %>% 
+  count(year, party, word, sort = TRUE) %>% 
+  group_by(year) %>% 
+  slice_max(order_by = n, n = 20) %>% 
+  plot_wordclouds() +
+  scale_color_gradientn(colors = c("darkgreen","blue","red")) +
+  facet_wrap(~year, ncol = 3, scales = "free") +
+  labs(title = "Fig. 1: Stop Word Filtering - Democrats")
+  
+save_plot_pdf("fig_1")
+```
+Hm.. interestingly enough one of the Democrat's primary talking points since 2008 appears to have been the opposite candidate, except for 2020. Is there also the same tendency by republicans?
+
+```{r republicans word cloud stop word filtering, fig.cap="Fig. 2: Stop Word Filtering - Republicans"}
+stop_words_removed %>% 
+ filter(party == "R") %>% 
+  count(year, party, word, sort = TRUE) %>% 
+  group_by(year) %>% 
+  slice_max(order_by = n, n = 20) %>% 
+  plot_wordclouds() +
+  scale_color_gradientn(colors = c("darkgreen","blue","red")) +
+  facet_wrap(~year, ncol = 3, scales = "free") +
+   labs(title = "Fig. 2: Stop Word Filtering - Republicans")
+
+save_plot_pdf("fig_2")
+```
+
+To some extent yes, but this tendency does not appear as pronounced as with the democrats. Let's try to make a comparison cloud across all years in order to see most common words across all debates. This might make it a little clearer.
+This is done by filtering out rows, where the column *party* does not contain the string "R" or "D". "R" is then transformed in to "Republicans" and "D" is tranformed to "Democrats". This is done for aestetic reasons (otherwise the headings will be "R" and "D").  Then, using the function *acast* from the package *Reshape2* (Wickham, 2007), the output is transformed to a wide format, where each column represents either republicans or democrats and each row represents a word and how often they are uttered by a democratic and a republican candidate. If a word is mentioned 0 times by one of the parties, it will be filled with 0 rather than NA.
+
+```{r comparsion cloud both parties, fig.cap="Fig. 4: Comparison cloud generated by stop word filtering"}
+stop_words_removed  %>% 
+  filter(grepl("[DR]", party)) %>% 
+  mutate(party = str_replace(party, "D", "Democrats")) %>% 
+  mutate(party = str_replace(party, "R", "Republicans")) %>% 
+  count(party, word, sort = TRUE) %>% 
+  acast(word ~ party, value.var = "n", fill = 0) %>%   
+  create_comparison_cloud(color_values = c("Blue", "Red"))
+
+save_plot_pdf(name ="fig_3")
+```
+Even when combining all years, some of the most mentioned word for republicans are "Obama" and "Clinton", while Democrats have talked a lot about "Mccain", "Donald", and "Bush". These few candidates appear so often, that otherwise common themes, such as national debt, jobs or budgets, are pushed aside. 
+However, it might be a result of changes to the debate format, such as longer debates, which naturally would increase how often a candidate is mentioned. Let's try using *term frequency - inverse document frequency*, which looks at the word frequency across all documents in order investigate whether this is a general phenomenon or the result of changes to the debate format. 
+
+
+## Term Frequency - Inverse Document Frequency
+
+```{r tf_idf}
+word_count_year <- debate_words %>% 
+  count(year, word, sort = TRUE)
+
+
+total_words_year <- word_count_year %>%
+  group_by(year) %>% 
+  summarise(total = sum(n))
+
+
+
+word_count_year <- left_join(word_count_year, total_words_year)
+
+word_tf_idf <- word_count_year %>% 
+  bind_tf_idf(word, year, n)
+
+
+```
+
+## TF_IDF plotting
+
+```{r TF_IDF plotting, fig.cap="Fig. 5: TF-IDF each year"}
+word_tf_idf %>%
+  group_by(year) %>%
+  slice_max(order_by = tf_idf, n = 20) %>%
+ plot_wordclouds(size_value = tf_idf, color_value = tf_idf) +
+  scale_color_gradientn(colors = c("darkgreen","blue","red")) +
+   facet_wrap(~year, ncol = 3, scales = "free") +
+  labs(title = "Fig. 5: Tf-idf each year - Both Parties")
+
+save_plot_pdf("fig_4")
+```
+
+
+What about overall?
+
+```{r tf_idf by party}
+word_count_party <- debate_words %>% 
+  count(party, word, sort = TRUE)
+
+total_words_party <- word_count_party %>%
+  group_by(party) %>% 
+  summarise(total = sum(n))
+
+word_count <- left_join(word_count_party, total_words_party)
+
+word_tf_idf <- word_count_party %>% 
+  bind_tf_idf(word, party, n)
+```
+
+
+```{r tf_idf by party all years, fig.cap="Fig. 6: TF-IDF for each party across all years"}
+word_tf_idf %>% 
+  group_by(party) %>% 
+  slice_max(order_by = tf_idf, n = 20) %>% 
+  plot_wordclouds(size_value = tf_idf, color_value = tf_idf) +
+  scale_color_gradientn(colors = c("darkgreen","blue","red")) +
+  facet_wrap(~party, ncol = 2, scales = "free") +
+  labs(title = "Fig. 6: TF-IDF for each party across all years" )
+
+save_plot_pdf("fig_6")
+```
+Here we also how fundamentally different. Rhetoric they use
+
+
+## Sentiment analysis
+
+```{r sentiment analysis prepare}
+distortion_words <- tibble(word = c("trump", "vice"))
+
+ sentiment_debate_words <- debate_words %>% 
+  anti_join(distortion_words) %>% 
+  inner_join(get_sentiments("afinn")) %>% 
+  inner_join(get_sentiments("bing"))
+```
+
+
+### Plot overall sentiment
+
+
+```{r plot pie char function}
+#Plot Pie chart function
+plot_pie_chart <- function(data_set, fill_value = sentiment){
+  data_set %>%  
+  mutate(total = sum(n)) %>% 
+  mutate(share = n/total) %>% 
+  ggplot() + 
+  geom_bar(aes(x = "", y = share, fill = {{fill_value}}), stat = "identity") +
+  scale_fill_brewer(palette = "Set3") +
+  coord_polar("y", start = 0) +
+  theme(axis.text.x = element_blank()) 
+  }
+
+```
+
+
+```{r Pie chart Republicans since 1992, fig.cap="Fig. 7: Total Republican sentiment since 1992"}
+#Pie chart Republicans - over all sentiment
+sentiment_debate_words %>% 
+filter (year >= 1992) %>% 
+filter(party == "R") %>% 
+count(sentiment, sort = TRUE) %>% 
+plot_pie_chart() +
+labs(title = "Fig. 7: Republicans Total Sentiment Since 1992 - BING",
+       x = "",
+       y = "",
+       fill = "sentiments")
+
+save_plot_pdf("fig_7")
+```
+
+
+```{r Pie chart Democrats since 1992, fig.cap="Fig. 8: Total democratic sentiment since 1992"}
+#Pie chart Democrats - over all sentiment 
+sentiment_debate_words %>%
+filter(year >= 1992) %>%   
+filter(party == "D") %>% 
+count(sentiment) %>%  
+plot_pie_chart() +
+labs(title = "Fig. 8: Democrats Total Sentiment Since 1992 - BING",
+       x = "",
+       y = "",
+       fill = "sentiments")
+
+save_plot_pdf("fig_8")
+```
+
+
+```{r Pie chart total sentiment both parties, fig.cap="Fig. 8: Total Sentiment since 1992 - Both Parties"}
+#Pie chart Democrats - over all sentiment 
+sentiment_debate_words %>%
+filter(year >= 1992) %>%  
+  filter(grepl("[RD]", party)) %>% 
+count(sentiment) %>%  
+plot_pie_chart() +
+labs(title = "Fig. 9: Borth Parties' Total Sentiment Since 1992 - BING",
+       x = "",
+       y = "",
+       fill = "sentiments")
+
+save_plot_pdf("fig_9")
+```
+
+
+
+Lets try with AFINN
+
+```{r Bar chart total sentiment since 1992 - afinn, fig.cap="Fig. 10: Sentiment distribution since 1992 fo Both Parties - AFINN"}
+sentiment_debate_words %>%
+  filter(grepl("[RD]", party)) %>% 
+  filter(year >= 1992) %>% 
+  count(value) %>%
+  ggplot(aes(x = value, y = n)) +
+  geom_col() +
+    labs(title = "Fig. 10: Combined Sentiment Distribution For Both Parties - AFINN",
+       x = "sentiment",
+       y = "count")
+
+save_plot_pdf("fig_10")
+```
+
+
+```{r bar chart R, fig.cap="Fig. 11: Sentiment distribution since 1992 for Republicans - AFINN"}
+sentiment_debate_words %>%
+  filter(party == "R") %>% 
+  filter(year >= 1992) %>% 
+  count(value) %>%
+  ggplot(aes(x = value, y = n)) +
+  geom_col() +
+    labs(title = "Fig. 11: Sentiment distribution since 1992 for Republicans - AFINN",
+       x = "sentiment",
+       y = "count")
+
+save_plot_pdf("fig_11")
+```
+
+```{r bar chart D, fig.cap="Fig. 12: Sentiment distribution since 1992 for Republicans - AFINN"}
+sentiment_debate_words %>%
+  filter(party == "D") %>% 
+  filter(year >= 1992) %>% 
+  count(value) %>%
+  ggplot(aes(x = value, y = n)) +
+  geom_col() +
+    labs(title = "Fig. 12: Sentiment distribution since 1992 for Democrats - AFINN",
+       x = "sentiment",
+       y = "count")
+
+save_plot_pdf("fig_12")
+```
+
+
+
+### Plot sentiment each year
+
+```{r pie chart republicans all years, fig.cap="Fig. 13: Republicans' sentiment for each year - BING"}
+#Republicans
+sentiment_debate_words %>%   
+  filter(party == "R") %>% 
+  filter(year >= 1992) %>% 
+  group_by(year, sentiment) %>% 
+  tally() %>% 
+  plot_pie_chart() +
+   facet_wrap(~year, ncol = 7) +
+  labs(title = "Fig. 13: Republicans' sentiment by year - BING",
+       x = "",
+       y = "",
+       fill = "sentiments")
+
+save_plot_pdf("fig_13")
+```
+
+
+```{r pie chart democrats all years, fig.cap="Fig. 14: Democrats' sentiment for each year - BING"}
+#Democrats
+sentiment_debate_words %>%
+  filter(party == "D") %>% 
+  filter(year >= 1992) %>% 
+  group_by(year, sentiment) %>% 
+  tally() %>% 
+  plot_pie_chart() +
+  facet_wrap(~year, ncol = 7) +
+  labs(title = "Fig. 14: Democrats sentiment by year - BING",
+       x = "",
+       y = "",
+       fill = "sentiments")
+
+save_plot_pdf("fig_14")
+```
+
+
+```{r pie chart combined sentiment all years, fig.cap="Fig. 15: Combined sentiment for each year - BING"}
+#All 
+sentiment_debate_words %>%
+  filter(year >= 1992) %>% 
+  group_by(year, sentiment) %>% 
+  tally() %>% 
+  plot_pie_chart() +
+  facet_wrap(~year, ncol = 7) +
+  labs(title = "Fig. 15: Total sentiment by year - BING",
+       x = "",
+       y = "",
+       fill = "sentiments")
+
+save_plot_pdf("fig_15")
+```
+
+
+Is there a correlation between when they were in power and how positive they were? Remember to filter out words like "vice". 
+
+### Bigrams
+
+```{r bigrams negation words}
+negation_words <- c("not", "no", "never", "without")
+
+all_debates_bigrams <- all_debates %>% 
+  unnest_tokens(bigram, text, token = "ngrams", n = 2) %>% 
+  separate(bigram, c("word1", "word2"), sep = " ") %>% 
+  filter(word1 %in% negation_words) %>% 
+  inner_join(get_sentiments("afinn"), by = c(word2 = "word"))
+
+save_plot_pdf("fig_16")
+```
+
+
+```{r plot contribution, fig.cap="Fig. 16: Top 30 words that distorts the total sentiment most"}
+all_debates_bigrams %>% 
+  count(word1, word2, value, sort = TRUE) %>% 
+  mutate(contribution = n * value) %>%
+  arrange(desc(abs(contribution))) %>%
+  head(30) %>% 
+  mutate(word2 = reorder(word2, contribution)) %>%
+  arrange(desc(n)) %>% 
+  ggplot(aes(n * value, word2, fill = n * value > 0)) +
+  geom_col(show.legend = FALSE) +
+  labs(title = "Fig. 16: Sentiment distortion by word - AFINN",
+       x = "Total sentiment value",
+       y = "Word")
+
+save_plot_pdf("fig_16")
+```
+
+
+```{r sentient distortion by year, fig.cap="Fig. 17: How each year's sentiment is distorted"}
+all_debates_bigrams %>% 
+  count(word1, word2, year, value, sort = TRUE) %>% 
+  mutate(contribution = n * value) %>% 
+  group_by(year) %>% 
+  summarise(total = sum(contribution)) %>% 
+  ggplot(aes(x = year, y = total), stat = "identity") +
+  geom_col() +
+  scale_x_continuous(breaks=seq(1960, 2020, by = 4)) +
+  scale_y_continuous(breaks = seq(0, 70, by = 10)) +
+  labs(title = "Fig. 17: Sentiment distortion each year- AFINN",
+       x = "Year",
+       y = "Sentiment value")
+
+
+save_plot_pdf("fig_17")
+```
+
+
+## Combining Sentiment and wordclouds
+Lastly, let's get an overview by 
+```{r sentiment word cloud democrats, fig.cap="Fig. 18: Democratic word cloud. The size of each word is the count, the color is the sentiment"}
+sentiment_debate_words %>%
+  filter(party == "D") %>%
+  filter(year >= 1992) %>% 
+  count(year, word, value, sort = TRUE) %>%
+  group_by(year) %>% 
+  slice_max(order_by  = n, n= 50) %>%    
+  plot_wordclouds(color_value = value) +
+  scale_color_gradient(low = "red", high = "green") +
+    facet_wrap(~year, ncol = 3) +
+  labs(title = "Fig. 18: Democrats' sentiment and word count year")
+
+save_plot_pdf("fig_18")
+```
+
+
+```{r sentiment word cloud republicans, fig.cap="Fig. 19: Republican word cloud. The size of each word is the count, the color is the sentiment"}
+sentiment_debate_words %>%
+  filter(party == "R") %>% 
+  filter(year >= 1992) %>% 
+  count(year, word, value, sort = TRUE)  %>% 
+  group_by(year) %>% 
+  slice_max(order_by = n,n= 50) %>%  
+  plot_wordclouds(color_value = value) +
+  scale_color_gradient(low = "red", high = "green" ) +
+  facet_wrap(~year, ncol = 3) +
+  labs(title = "Fig. 19: Republicans' sentiment value and word count each year")
+
+save_plot_pdf("fig_19")
+```
+
+
+```{r comparison Democrats, fig.cap="Fig. 20: Comparison cloud for Democrats"}
+sentiment_debate_words %>% 
+  filter(party == "D") %>% 
+  filter(year >= 1992) %>% 
+  count(word, sentiment, sort = TRUE) %>%   
+  acast(word ~ sentiment, value.var = "n", fill = 0) %>% 
+  create_comparison_cloud(title_value = "Fig. 20: Sentiment Comparison Cloud - Democrats")
+ 
+save_plot_pdf("fig_20")
+```
+
+
+
+```{r comparison republicans, fig.cap="Fig. 21: Comparison cloud for Democrats"}
+sentiment_debate_words %>% 
+  filter(party == "R") %>% 
+  filter(year >= 1992) %>% 
+  count(word, sentiment, sort = TRUE) %>% 
+  acast(word ~ sentiment, value.var = "n", fill = 0) %>% 
+  create_comparison_cloud(title_value = "Fig. 21: Sentiment Comparison Cloud - Republicans")
+
+save_plot_pdf("fig_21")
+```
+
+
+```{r comparison cloud both parties, fig.cap="Fig. 21: Comparison cloud for both parties"}
+sentiment_debate_words %>% 
+  filter(year >= 1992) %>% 
+  filter(grepl("[RD]", party)) %>% 
+  count(word, sentiment, sort = TRUE) %>%   
+  acast(word ~ sentiment, value.var = "n", fill = 0) %>% 
+  create_comparison_cloud(title_value = "Sentiment Comparison Cloud - Both Parties")
+
+save_plot_pdf("fig_22")
+```
+
+
+# Conclusion 
+
+# Literature
+(Wickham, 2014)
+(datacarpentry.org, n.d.): https://datacarpentry.org/spreadsheets-socialsci/03-dates-as-data/index.html 
+
+"Text Mining with R: A Tidy Approach" (2020).
+
+**Packages** 
+Zeileis A, Grothendieck G (2005). “zoo: S3 Infrastructure for Regular and Irregular Time Series.” Journal of Statistical Software, 14(6), 1–27. doi: 10.18637/jss.v014.i06.
+
+Garrett Grolemund, Hadley Wickham (2011). Dates and Times Made Easy with lubridate. Journal of Statistical Software, 40(3), 1-25. URL http://www.jstatsoft.org/v40/i03/.
+
+Karl W. Broman & Kara H. Woo (2018) Data Organization in Spreadsheets,
+The American Statistician, 72:1, 2-10, DOI: 10.1080/00031305.2017.1375989
+
+Silge J, Robinson D (2016). “tidytext: Text Mining and Analysis Using Tidy Data Principles in R.” JOSS, 1(3). doi: 10.21105/joss.00037, http://dx.doi.org/10.21105/joss.00037.
+
+Wickham H, et al. (2019). “Welcome to the tidyverse.” Journal of Open Source Software, 4(43), 1686. doi: 10.21105/joss.01686.
+
+Wickham H (2007). “Reshaping Data with the reshape Package.” Journal of Statistical Software, 21(12), 1–20. http://www.jstatsoft.org/v21/i12/.
+
+# Ekstra
+
+```{r commonality cloud, fig.cap="Fig. 3: Commonality cloud generated by stop word filtering"}
+# stop_words_removed %>% 
+#   filter(grepl("[DR]", party)) %>% 
+#   count(party, word, sort = TRUE) %>% 
+#   acast(word ~ party, value.var = "n", fill = 0) %>% 
+#   commonality.cloud(colors = c("darkred", "darkgreen"),
+#                    random.order = FALSE, 
+#                    scale = c(2, 0.2)) +
+#   title(main = "Fig. 3: Commonality Cloud - Both Parties")
+# 
+# save_plot_pdf("fig_3")
+```

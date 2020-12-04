@@ -1,11 +1,11 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.21 (TeX Live 2020/W32TeX) (preloaded format=pdflatex 2020.10.12)  26 NOV 2020 13:16
+This is pdfTeX, Version 3.14159265-2.6-1.40.21 (TeX Live 2020/W32TeX) (preloaded format=pdflatex 2020.11.26)  1 DEC 2020 18:29
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
 **final_project.tex
 (./final_project.tex
-LaTeX2e <2020-10-01> patch level 1
-L3 programming layer <2020-10-05> xparse <2020-03-03> (c:/Users/Bruger/AppData/
+LaTeX2e <2020-10-01> patch level 2
+L3 programming layer <2020-10-27> xparse <2020-03-03> (c:/Users/Bruger/AppData/
 Roaming/TinyTeX/texmf-dist/tex/latex/base/article.cls
 Document Class: article 2020/04/10 v1.4m Standard LaTeX document class
 (c:/Users/Bruger/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/base/size10.clo
@@ -537,105 +537,92 @@ LaTeX Font Info:    Trying to load font information for U+msb on input line 109
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 )
 LaTeX Font Info:    Trying to load font information for T1+lmtt on input line 1
-11.
+19.
 (c:/Users/Bruger/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/lm/t1lmtt.fd
 File: t1lmtt.fd 2009/10/30 v1.6 Font defs for Latin Modern
 )
-LaTeX Font Info:    Font shape `T1/lmtt/bx/n' in size <10> not available
-(Font)              Font shape `T1/lmtt/b/n' tried instead on input line 112.
-
-Overfull \hbox (265.24284pt too wide) in paragraph at lines 122--122
-[]\T1/lmtt/m/n/10 ## -- Attaching packages ------------------------------------
------------------------------------------------------------- tidyverse 1.3.0 --
-[] 
- []
-
-
-Overfull \hbox (265.24284pt too wide) in paragraph at lines 143--143
-[]\T1/lmtt/m/n/10 ## -- Conflicts ---------------------------------------------
------------------------------------------------------- tidyverse_conflicts() --
-[] 
- []
-
-[1
-
-{c:/Users/Bruger/AppData/Roaming/TinyTeX/texmf-var/fonts/map/pdftex/updmap/pdft
-ex.map}] [2] [3] [4]
-Overfull \hbox (81.49338pt too wide) in paragraph at lines 513--513
+Overfull \hbox (81.49338pt too wide) in paragraph at lines 168--168
 []\T1/lmtt/m/n/10 ##  [1] "https://www.debates.org/voter-education/debate-trans
 cripts/september-29-2020-debate-transcript/"[] 
  []
 
 
-Overfull \hbox (254.74287pt too wide) in paragraph at lines 513--513
+Overfull \hbox (254.74287pt too wide) in paragraph at lines 168--168
 []\T1/lmtt/m/n/10 ##  [2] "http://debates.org/voter-education/debate-transcript
 s/vice-presidential-debate-at-the-university-of-utah-in-salt-lake-city-utah/"[]
  
  []
 
 
-Overfull \hbox (76.2434pt too wide) in paragraph at lines 513--513
-[]\T1/lmtt/m/n/10 ##  [8] "/voter-education/debate-transcripts/october-11-2012-
+Overfull \hbox (70.99341pt too wide) in paragraph at lines 168--168
+[]\T1/lmtt/m/n/10 ##  [3] "https://www.debates.org/voter-education/debate-trans
+cripts/october-22-2020-debate-transcript/"[] 
+ []
+
+
+Overfull \hbox (76.2434pt too wide) in paragraph at lines 168--168
+[]\T1/lmtt/m/n/10 ##  [9] "/voter-education/debate-transcripts/october-11-2012-
 the-biden-romney-vice-presidential-debate/"[] 
  []
 
 
-Overfull \hbox (86.74336pt too wide) in paragraph at lines 513--513
-[]\T1/lmtt/m/n/10 ##  [9] "/voter-education/debate-transcripts/october-16-2012-
+Overfull \hbox (86.74336pt too wide) in paragraph at lines 168--168
+[]\T1/lmtt/m/n/10 ## [10] "/voter-education/debate-transcripts/october-16-2012-
 the-second-obama-romney-presidential-debate/"[] 
  []
 
 
-Overfull \hbox (81.49338pt too wide) in paragraph at lines 513--513
-[]\T1/lmtt/m/n/10 ## [10] "/voter-education/debate-transcripts/october-22-2012-
+Overfull \hbox (81.49338pt too wide) in paragraph at lines 168--168
+[]\T1/lmtt/m/n/10 ## [11] "/voter-education/debate-transcripts/october-22-2012-
 the-third-obama-romney-presidential-debate/"[] 
  []
 
 
-Overfull \hbox (7.99359pt too wide) in paragraph at lines 513--513
-[]\T1/lmtt/m/n/10 ## [27] "/voter-education/debate-transcripts/october-11-1992-
-first-half-debate-transcript/"[] 
- []
-
-
-Overfull \hbox (13.24358pt too wide) in paragraph at lines 513--513
+Overfull \hbox (7.99359pt too wide) in paragraph at lines 168--168
 []\T1/lmtt/m/n/10 ## [28] "/voter-education/debate-transcripts/october-11-1992-
-second-half-debate-transcript/"[] 
- []
-
-
-Overfull \hbox (7.99359pt too wide) in paragraph at lines 513--513
-[]\T1/lmtt/m/n/10 ## [30] "/voter-education/debate-transcripts/october-15-1992-
 first-half-debate-transcript/"[] 
  []
 
 
-Overfull \hbox (13.24358pt too wide) in paragraph at lines 513--513
-[]\T1/lmtt/m/n/10 ## [31] "/voter-education/debate-transcripts/october-15-1992-
+Overfull \hbox (13.24358pt too wide) in paragraph at lines 168--168
+[]\T1/lmtt/m/n/10 ## [29] "/voter-education/debate-transcripts/october-11-1992-
 second-half-debate-transcript/"[] 
  []
 
-[5] [6]
-Underfull \vbox (badness 10000) detected at line 615
+
+Overfull \hbox (7.99359pt too wide) in paragraph at lines 168--168
+[]\T1/lmtt/m/n/10 ## [31] "/voter-education/debate-transcripts/october-15-1992-
+first-half-debate-transcript/"[] 
  []
 
 
-Underfull \vbox (badness 10000) detected at line 615
+Overfull \hbox (13.24358pt too wide) in paragraph at lines 168--168
+[]\T1/lmtt/m/n/10 ## [32] "/voter-education/debate-transcripts/october-15-1992-
+second-half-debate-transcript/"[] 
  []
 
-[7]
+[1
+
+{c:/Users/Bruger/AppData/Roaming/TinyTeX/texmf-var/fonts/map/pdftex/updmap/pdft
+ex.map}]
+Overfull \hbox (160.24315pt too wide) in paragraph at lines 222--222
+[]\T1/lmtt/m/n/10 ##  [2] "/voter-education/debate-transcripts/vice-presidentia
+l-debate-at-the-university-of-utah-in-salt-lake-city-utah/"[] 
+ []
+
+[2]
 Runaway argument?
 ^^M##       line^^M## 1        3^^M## 2        4^^M## 3        5^^M##\ETC.
 ! TeX capacity exceeded, sorry [main memory size=5000000].
-l.16260 ...                                       
+l.16073 ...                                       
                                                                             ...
  
 Here is how much of TeX's memory you used:
- 10814 strings out of 481865
- 156634 string characters out of 5929482
+ 10804 strings out of 481433
+ 156541 string characters out of 5918733
  5000001 words of memory out of 5000000
- 26966 multiletter control sequences out of 15000+600000
- 560306 words of font info for 52 fonts, out of 8000000 for 9000
+ 27397 multiletter control sequences out of 15000+600000
+ 559669 words of font info for 50 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
- 60i,6n,66p,3279b,466s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 66i,6n,72p,2874b,468s stack positions out of 5000i,500n,10000p,200000b,80000s
 !  ==> Fatal error occurred, no output PDF file produced!

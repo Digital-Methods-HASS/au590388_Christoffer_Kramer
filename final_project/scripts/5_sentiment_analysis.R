@@ -1,0 +1,6 @@
+library(tidyverse)
+library(tidytext)
+library(ggplot2)
+library(ggwordcloud)
+library(wordcloud)
+library(reshape2)
