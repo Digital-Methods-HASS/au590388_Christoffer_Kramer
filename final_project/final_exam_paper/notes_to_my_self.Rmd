@@ -758,6 +758,63 @@ sentiment_debate_words %>%
 
 ```
 
+
+#Pie chars
+```{r Pie chart total sentiment both parties, fig.cap="Fig. 8: Total Sentiment since 1992 - Both Parties"}
+#Pie chart Democrats - over all sentiment 
+sentiment_debate_words %>%
+filter(grepl("[RD]", party)) %>% 
+count(sentiment) %>%  
+plot_pie_chart() +
+labs(title = "Fig. 9: Borth Parties' Total Sentiment Since 1992 - BING",
+       x = "",
+       y = "",
+       fill = "sentiments")
+
+save_plot_pdf("fig_9")
+```
+
+
+```{r pie chart combined sentiment all years, fig.cap="Fig. 15: Combined sentiment for each year - BING"}
+#All 
+sentiment_debate_words %>%
+  group_by(year, sentiment) %>% 
+  tally() %>% 
+  plot_pie_chart() +
+  facet_wrap(~year, ncol = 7) +
+  labs(title = "Fig. 15: Total sentiment by year - BING",
+       x = "",
+       y = "",
+       fill = "sentiments")
+
+save_plot_pdf("fig_15")
+```
+
+```{r comparison cloud both parties, fig.cap="Fig. 21: Comparison cloud for both parties"}
+sentiment_debate_words %>% 
+  filter(grepl("[RD]", party)) %>% 
+  count(word, sentiment, sort = TRUE) %>%   
+  acast(word ~ sentiment, value.var = "n", fill = 0) %>% 
+  create_comparison_cloud(title_value = "Sentiment Comparison Cloud - Both Parties")
+
+save_plot_pdf("fig_22")
+```
+
+#columns sentiment:
+```{r bar chart R, fig.cap="Fig. 11: Sentiment distribution since 1992 for Republicans - AFINN"}
+sentiment_debate_words %>%
+  filter(party == "R") %>% 
+  count(value) %>%
+  ggplot(aes(x = value, y = n)) +
+  geom_col() +
+    labs(title = "Fig. 11: Sentiment distribution since 1992 for Republicans - AFINN",
+       x = "sentiment",
+       y = "count")
+
+save_plot_pdf("fig_11")
+```
+
+
 # Cleaning
 
 Then I make a list of correct dates, which have the same index

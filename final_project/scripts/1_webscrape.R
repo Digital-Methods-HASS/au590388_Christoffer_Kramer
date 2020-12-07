@@ -46,3 +46,4 @@ for (link in vect_link[!is.na(vect_link)]) {
 } #end loop
 
 write.csv(all_debates_raw, "./data/all_debates_raw.csv", row.names=FALSE) #create csv
+
