@@ -1,8 +1,10 @@
 ---
 title: "HW5 - Make Data Move"
-author: ""
+author: ''
 date: "05/10/2020"
-output: html_document
+output:
+  word_document: default
+  html_document: default
 ---
 
 ```{r setup, include=FALSE}

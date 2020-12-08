@@ -2,7 +2,9 @@
 title: "Functions Assignment W6"
 author: "Christoffer M. Kramer"
 date: "21/10/2020"
-output: html_document
+output:
+  word_document: default
+  html_document: default
 ---
 
 # Question 1

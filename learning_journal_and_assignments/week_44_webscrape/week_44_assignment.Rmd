@@ -2,7 +2,9 @@
 title: 'Assignment week 44: Webscraping'
 author: "Christoffer M. Kramer"
 date: "30/10/2020"
-output: html_document
+output:
+  word_document: default
+  html_document: default
 ---
 
 My repo: https://github.com/Digital-Methods-HASS/au590388_Christoffer_Kramer/tree/master/learning_journal_and_assignments/week_44_webscrape
@@ -86,6 +88,13 @@ Then I push the name into my empty vector (debate_names).
 I then create an object called "debate". This contains the scraped data.
 The debate object is then transformed to a tibble, which is easier to text-mine.
 Lastly, I create an unique object with the function assign(). This object has the same name as the name in the vector "debate_names", and it contains the value of the object "debate".
+```{r, include=FALSE}
+#For my final project, I had to remove these in order to make the web-scraping work. This is because the 2020 debates weren't included when I wrote this.
+vect_link[1] <- "/voter-education/debate-transcripts/september-29-2020-debate-transcript/"
+vect_link[2] <- "/voter-education/debate-transcripts/vice-presidential-debate-at-the-university-of-utah-in-salt-lake-city-utah/"
+vect_link[3] <- "/voter-education/debate-transcripts/october-22-2020-debate-transcript/"
+
+```
 
 ```{r}
 debate_names = NULL #Create an empty object
@@ -128,7 +137,7 @@ It works! Now each debate is scraped, saved in an object and is in a dataframe. 
 
 data("stop_words")#Get all stopwords
 
- `debate_october-11-1984` %>% #Chose the debate of october 11 th. 1984.
+ `debate_october-11-1984` %>% #Chose the debate of october 11th. 1984.
   unnest_tokens(word, text) %>% #Tokenize by word
   anti_join(stop_words) %>% #Remove stop words
   count(word, sort = TRUE) %>% #Count each word and sort the result.
