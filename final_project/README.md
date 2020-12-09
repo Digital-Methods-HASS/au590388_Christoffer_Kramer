@@ -2,6 +2,8 @@
 This project is part of my final exam for the digital methods class at Aarhus University.
 This program i part of a data-driven assignment, where I text-mine presidential and vice-presidential debates since 1960. 
 
+*Author*: Christoffer Mondrup Kramer
+
 # Folders and contents
 * **data**: Contains all raw data used in the scripts.
 * **Final_exam_paper**: Here is my document to be handed in for the final exam. The markdown file  *final_project* is knitted to word and saved as *final-portfolio* where I have done some extra formatting and added my previous portfolios.
@@ -9,6 +11,21 @@ This program i part of a data-driven assignment, where I text-mine presidential 
   * **extra_scripts**: These are scripts, that I, sadly, didn't have room for in my final exam. 
 * **plots**: All plots from the scrips (or the Rmarkdown) are saved here.
   * **extra**: All plots from the scripts in the sub-folder *extra_scripts* are saved here.
+
+# Techinal specifications:
+* **Programming language**: R
+* **Version**: 4.0.2
+* **Software**: This project is produced in RStudio
+
+*Packages*
+This project uses the following packages:
+- Fellows, I. (2018). "wordcloud: Word Clouds". Located at CRAN here: https://cran.r-project.org/web/packages/wordcloud/index.html 
+- Grolemund, G. & Wickham, H. (2011). ”Dates and Times Made Easy with lubridate”. Journal of Statistical Software, 40(3), 1-25. URL http://www.jstatsoft.org/v40/i03/
+- Silge, J. & Robinson, D. (2017). “Text Mining with R: A Tidy Approach”. O’reilly Media, Inc. URL: https://www.tidytextmining.com/ 
+- Wickham, H (2016). “ggplot2: Elegant Graphics for Data Analysis.” Springer-Verlag New York. ISBN 978-3-319-24277-4, https://ggplot2.tidyverse.org 
+- Wickham, H. (2020). “rvest: Easily Harvest (Scrape) Web Pages”. Located at CRAN here: https://cran.r-project.org/web/packages/rvest/index.html 
+- Wickham H et al. (2019). “Welcome to the tidyverse.” Journal of Open Source Software, 4(43), 1686. doi: 10.21105/joss.01686
+- Zeileis, A. & Grothendieck, G. (2005). “zoo: S3 Infrastructure for Regular and Irregular Time Series.” Journal of Statistical Software, 14(6), 1–27. doi: 10.18637/jss.v014.i06
 
 # How to run 
 1. run the scripts in the following order:
@@ -38,14 +55,14 @@ I the script **3_text-mining.R** will produce the following plots:
 * **fig_3.pdf**: Pie charts which displays how republicans sentiments have changed each year (BING lexicon).
 * **fig_4.pdf**: Pie charts which displays how democrats sentiments have changed each year (BING lexicon).
 
-##Extra plots
+## Extra plots
 These plots aren't included in my final exam!
 The script **1_extra_tf-idf_stop_word_filtering.R** will produce the following plots:
 * **extra_commonality_cloud.pdf**: A word cloud that displays which words the parties shares the most.
 * **extra_comparison_cloud.pdf**: A comparison cloud that displays what words each party use across all years.
 * **extra_tf_idf_by_party**: A word cloud that displays the top 20 words with the highest tf-idf for each party across all years.
 
-The script **1_extra_tf-idf_stop_word_filtering.R** will produce the following plots:
+The script **2_extra_sentiment_analysis.R** will produce the following plots:
 * **extra_democrats_total_sentiment_BING.pdf**: A pie chart that shows the democrats total sentiment across all years (BING lexicon).
 * **extra_republicans_total_sentiment_BING.pdf**: A pie chart that shows the republicans total sentiment across all years (BING lexicon).
 * **extra_total_sentiment_distribution_both_parties.pdf**: Two bar charts that show both parties total sentiment distribution across all years (Afinn lexicon).
@@ -56,8 +73,8 @@ The script **1_extra_tf-idf_stop_word_filtering.R** will produce the following p
 * **extra_sentiment_comparison_cloud_republicans.pdf**: A comparison cloud that compares the negative and positive words for the republicans (BING lexicon).
 * **extra_word_cloud_by_year_party_sentiment_and_count**: Word clouds that are facetted by year and party, which displays how each party have changed their sentiment and word count for each year (afinn lexicon).
 
-#Metadata
-All metadata for my data sets are provided in the *READMe* file in the folder *data*.
+# Metadata
+All metadata for my data sets are provided in the *README* file in the folder *data*.
 
 # License
 This whole repository is licensed under *creative commons*. Feel free to use it in any way you whish. 
