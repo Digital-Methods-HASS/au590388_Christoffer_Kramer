@@ -18,12 +18,15 @@ This program i part of a data-driven assignment, where I text-mine presidential 
 * **Software**: This project is produced in RStudio
 
 *Packages*
+
 This project uses the following packages:
 - Fellows, I. (2018). "wordcloud: Word Clouds". Located at CRAN here: https://cran.r-project.org/web/packages/wordcloud/index.html 
 - Grolemund, G. & Wickham, H. (2011). ”Dates and Times Made Easy with lubridate”. Journal of Statistical Software, 40(3), 1-25. URL http://www.jstatsoft.org/v40/i03/
+- Pennec, L. E. (2019). "ggwordcloud: A Word Cloud Geom for 'ggplot2'". Located at CRAN here: https://cloud.r-project.org/web/packages/ggwordcloud/index.html 
 - Silge, J. & Robinson, D. (2017). “Text Mining with R: A Tidy Approach”. O’reilly Media, Inc. URL: https://www.tidytextmining.com/ 
 - Wickham, H (2016). “ggplot2: Elegant Graphics for Data Analysis.” Springer-Verlag New York. ISBN 978-3-319-24277-4, https://ggplot2.tidyverse.org 
 - Wickham, H. (2020). “rvest: Easily Harvest (Scrape) Web Pages”. Located at CRAN here: https://cran.r-project.org/web/packages/rvest/index.html 
+- Wickham, H. (2007). “Reshaping Data with the reshape Package.” Journal of Statistical Software, 21(12), 1–20. http://www.jstatsoft.org/v21/i12/.
 - Wickham H et al. (2019). “Welcome to the tidyverse.” Journal of Open Source Software, 4(43), 1686. doi: 10.21105/joss.01686
 - Zeileis, A. & Grothendieck, G. (2005). “zoo: S3 Infrastructure for Regular and Irregular Time Series.” Journal of Statistical Software, 14(6), 1–27. doi: 10.18637/jss.v014.i06
 
