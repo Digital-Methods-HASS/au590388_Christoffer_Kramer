@@ -12,7 +12,7 @@ This program i part of a data-driven assignment, where I text-mine presidential 
 * **plots**: All plots from the scrips (or the Rmarkdown) are saved here.
   * **extra**: All plots from the scripts in the sub-folder *extra_scripts* are saved here.
 
-# Techinal specifications:
+# Technical specifications:
 * **Programming language**: R
 * **Version**: 4.0.2
 * **Software**: This project is produced in RStudio
