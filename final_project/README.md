@@ -31,21 +31,21 @@ This project uses the following packages:
 - Zeileis, A. & Grothendieck, G. (2005). “zoo: S3 Infrastructure for Regular and Irregular Time Series.” Journal of Statistical Software, 14(6), 1–27. doi: 10.18637/jss.v014.i06
 
 # How to run 
-1. run the scripts in the following order:
+* Run the scripts in the following order:
   1. *1_webscrape.R*
   2. *2_data_cleaning.R*
   3. *3_text-mining.R*
-2. All plots can now be examined in the folder *plots*
+* All plots can now be examined in the folder *plots*
 
 ## Running the extra scripts
-1. run the scripts in the following order:
+* Run the scripts in the following order:
   1. *1_webscrape.R*
   2. *2_data_cleaning.R*
   3. *3_text-mining.R*
-2. Run the scripts from *extra_scripts* in the following order:
+* Run the scripts from *extra_scripts* in the following order:
   1. *1_extra_tf-idf_stop_word_filtering.R*
   2. *2_extra_sentiment_analysis.R*
-3. All plots can now be examined in the folder *plots* and plots from the scripts in *extra_scripts* can be examined in the sub-folder *extras*.
+* All plots can now be examined in the folder *plots* and plots from the scripts in *extra_scripts* can be examined in the sub-folder *extras*.
 
 # Trouble shooting and reproducibility 
 I can't guarantee that my data-source for the web-scraping will stay intact forever. Therefore, the result from the web-scraping are saved as a .CSV file. 
