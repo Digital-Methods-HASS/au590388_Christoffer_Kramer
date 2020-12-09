@@ -1,7 +1,8 @@
+### Web scrape ###
 
 # Load libraries ----------------------------------------------------------
-library(rvest) 
-library(tidyverse)
+library(rvest) #web scraping
+library(tidyverse) #data cleaning
 
 
 # Scrape Debate function --------------------------------------------------
@@ -46,4 +47,3 @@ for (link in vect_link[!is.na(vect_link)]) {
 } #end loop
 
 write.csv(all_debates_raw, "./data/all_debates_raw.csv", row.names=FALSE) #create csv
-

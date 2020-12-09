@@ -1152,7 +1152,7 @@ sentiment_debate_words %>%
   plot_wordclouds(color_value = value) +
   scale_color_gradient(low = "red", high = "green") +
     facet_wrap(~year + party) +
-  labs(title = "Fig. 5: Democrats' sentiment and word count year")
+  labs(title = "Fig. 5: Both parties' sentiment and word count year")
 
 save_plot_pdf("fig_5")
 ```

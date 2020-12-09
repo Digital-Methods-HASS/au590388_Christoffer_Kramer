@@ -1,3 +1,4 @@
+### Data cleaning ###
 
 # Load relevant libraries -------------------------------------------------
 library(tidyverse) #Cleaning data
@@ -77,4 +78,3 @@ all_debates <- all_debates %>%
 
 all_debates <- all_debates %>% 
   relocate(first_name, .before = last_name)
-
