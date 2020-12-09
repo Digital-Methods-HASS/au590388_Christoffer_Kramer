@@ -1,8 +1,8 @@
 # candidates_since_1960.csv
-*Author*: Christoffer Monrup Kramer
-*Creation Date*: 12-11-2020 (day-month-year)
-*Description*: This data was produced manually by me. It contains a list of all presidential and vice-presidential candidates since 1960, including the year they ran, what position they ran for, and their party affiliation.
-*License*: Creative commons.
+* *Author*: Christoffer Monrup Kramer
+* *Creation Date*: 12-11-2020 (day-month-year)
+* *Description*: This data was produced manually by me. It contains a list of all presidential and vice-presidential candidates since 1960, including the year they ran, what position they ran for, and their party affiliation.
+* *License*: Creative commons.
 
 ## Variables
 * **year** (integer): What year did the candidate run.
@@ -17,11 +17,11 @@
   * *vice_president*: The candidate ran for vice-presideny
 
 # all_debates_raw.csv
-*Author*: The Commission on Presidential debates (https://www.debates.org/). 
-*Creation Date*: 10-12-2020 (day-month-year)
-*Description*: This data was produced automatically by wep-scraping.
-*source*: https://www.debates.org/voter-education/debate-transcripts/
-*License*: I contacted The Commision on Presidential Debates in order to gain permission to use the transcripts. They informed me,that the transcripts are in the public domain.
+* *Author*: The Commission on Presidential debates (https://www.debates.org/). 
+* *Creation Date*: 10-12-2020 (day-month-year)
+* *Description*: This data was produced automatically by wep-scraping.
+* *source*: https://www.debates.org/voter-education/debate-transcripts/
+* *License*: I contacted The Commision on Presidential Debates in order to gain permission to use the transcripts. They informed me,that the transcripts are in the public domain.
 
 ## Variables
 * **line** (integer): The line number in the original transcript
