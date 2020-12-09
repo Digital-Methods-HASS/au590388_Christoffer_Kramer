@@ -132,5 +132,5 @@ all_debates_bigrams %>%
        x = "Total sentiment value",
        y = "Word")
 
-save_plot_pdf("extra_sentiment_distribution_top_30_words", path_dest)
+save_plot_pdf("extra_sentiment_distortion_top_30_words", path_dest)
 

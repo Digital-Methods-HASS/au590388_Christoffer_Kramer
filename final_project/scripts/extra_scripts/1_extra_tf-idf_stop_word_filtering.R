@@ -17,7 +17,7 @@ create_comparison_cloud <- function(data_set,  title_value = "", color_values = 
     title(main = title_value, line = 1)
 }
 
-path_dest <- "././plots/extras/" #Destination for plot pdfs"
+path_dest <- "././plots/extras/" #Destination for plot pdfs
 
 ### Stop word filtering ###
 
