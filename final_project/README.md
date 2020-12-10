@@ -22,6 +22,7 @@ This program i part of a data-driven assignment, where I text-mine presidential 
 This project uses the following packages:
 - Fellows, I. (2018). "wordcloud: Word Clouds". Located at CRAN here: https://cran.r-project.org/web/packages/wordcloud/index.html 
 - Grolemund, G. & Wickham, H. (2011). ”Dates and Times Made Easy with lubridate”. Journal of Statistical Software, 40(3), 1-25. URL http://www.jstatsoft.org/v40/i03/
+- Hvitfeldt, E. & Silge, J. (2020). "textdata: Download and Load Various Text Datasets". Located at CRAN here: https://cran.r-project.org/web/packages/textdata/index.html 
 - Pennec, L. E. (2019). "ggwordcloud: A Word Cloud Geom for 'ggplot2'". Located at CRAN here: https://cloud.r-project.org/web/packages/ggwordcloud/index.html 
 - Silge, J. & Robinson, D. (2017). “Text Mining with R: A Tidy Approach”. O’reilly Media, Inc. URL: https://www.tidytextmining.com/ 
 - Wickham, H (2016). “ggplot2: Elegant Graphics for Data Analysis.” Springer-Verlag New York. ISBN 978-3-319-24277-4, https://ggplot2.tidyverse.org 

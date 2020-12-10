@@ -1,9 +1,10 @@
 ### Text mining: sentiment analysis, tf-idf, and stop word filtering ###
 
 # Load libraries ----------------------------------------------------------
-library(tidytext)
-library(ggplot2)
-library(ggwordcloud)
+library(tidytext) #text-mining
+library(ggplot2) #Plotting
+library(ggwordcloud) #plotting word clouds with ggplot
+library(textdata) #Getting the Afinn lexicon
 
 # Function for saving PDF -------------------------------------------------
 save_plot_pdf <- function(name, path_destination = "./plots/", width_value = 8.26, height_value = 11.69){
