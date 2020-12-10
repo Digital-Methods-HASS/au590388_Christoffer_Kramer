@@ -29,7 +29,7 @@ debate_words <- all_debates %>%
 
 # Remove stop words -------------------------------------------------------
 stop_words_removed <- debate_words %>% 
-  mutate(word = gsub("\u2019", "'", word)) %>%  #Make read it at unix
+  mutate(word = gsub("\u2019", "'", word)) %>%  #read single right quotation mark as apostrophe
   anti_join(stop_words)
 
 # Plot stop word filtering R and D ----------------------------------------
