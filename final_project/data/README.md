@@ -9,7 +9,7 @@
 * **party** (string): What party was the candidate affiliated with.
   * *D*: The candidate was a democrat
   * *R*: The candidate was a republican
-  * *I*: The candidate wa an independent
+  * *I*: The candidate was an independent
 * **last_name** (string): What was the candidate's last name
 * **first_name** (string): What was the candidate's first_name
 * **position** (string): What position did the candidate run for
@@ -18,10 +18,10 @@
 
 # all_debates_raw.csv
 * *Author*: The Commission on Presidential debates (https://www.debates.org/). 
-* *Creation Date*: 10-12-2020 (day-month-year)
+* *Creation Date*: Last web-scraped in december 2020.
 * *Description*: This data was produced automatically by wep-scraping.
 * *source*: https://www.debates.org/voter-education/debate-transcripts/
-* *License*: I contacted The Commision on Presidential Debates in order to gain permission to use the transcripts. They informed me,that the transcripts are in the public domain.
+* *License*: I contacted The Commission on Presidential Debates in order to gain permission to use the transcripts. They informed me,that the transcripts are in the public domain.
 
 ## Variables
 * **line** (integer): The line number in the original transcript
