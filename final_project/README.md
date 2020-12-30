@@ -43,7 +43,7 @@ This project uses the following packages:
 * Run the scripts from *extra_scripts* in the following order:
   1. *1_extra_tf-idf_stop_word_filtering.R*
   2. *2_extra_sentiment_analysis.R*
-* Note: When running script 2 the textdata package might ask for permission before installing the the afinn lexicon. If this happens, type "1" in the console in order to install.
+* Note: When running script 2 the textdata package might ask for permission before installing the afinn lexicon. If this happens, type "1" in the console in order to install.
 * All plots can now be examined in the sub-folder *extras*.
 
 # Trouble shooting and reproducibility 
