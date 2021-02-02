@@ -1,0 +1,490 @@
+    1  cd data-shell
+    2  cd OneDrive/Skrivebord/data-shell
+    3  cd ..
+    4  pwd
+    5  ls -F -a
+    6  cd
+    7  pwd
+    8  cd OneDrive/Skrivebord/data-shell/data
+    9  pwd
+   10  ls -F
+   11  cd /Onedrive/Skrivebord/data-shell
+   12  cd /OneDrive/Skrivebord/Data-shell
+   13  cd 
+   14  cd /OneDrive/Skrivebord/data-shell
+   15  cd /OneDrive/Skrivebord/data-shell
+   16  pwd
+   17  cd
+   18  /Users/Bruger/OneDrive/Skrivebord/data-shell
+   19  pwd
+   20  /OneDrive/Skrivebord/data-shell
+   21  /Users/Bruger/OneDrive/Skrivebord/data-shell
+   22  cd Onedrive/Skrivebord/data-shell
+   23  cd Onedrive/Skrivebord/data-shell/data
+   24  cd /data
+   25  cd data
+   26  /OneDrive/Skrivebord/data-shell
+   27  cd OneDrive/Skrivebord/data-shell
+   28  cd /OneDrive/Skrivebord/data-shell
+   29  cd /Users/Onedrive/Skrivebord/data-shell
+   30  cd /c/Users/Bruger/Onedrive/Skrivebord/data-shell
+   31  pwd ls -F
+   32  ls -F
+   33  cd
+   34  pwd
+   35  cd OneDrive
+   36  cd
+   37  ls nor
+   38  clear
+   39  pwd
+   40  cd OneDrive/Skrivebord/data-shell/data
+   41  cd ..
+   42  ls -F
+   43  mkdir thesis
+   44  ls -F
+   45  cd thesis
+   46  nano draft.txt
+   47  ls -F
+   48  touch draft.txt
+   49  touch my_file.txt
+   50  ls -l
+   51  ..
+   52  cd ..
+   53  mv thesis/draft.txt thesis/quotes.txt
+   54  ls thesis
+   55  mv thesis/quotes.txt .
+   56  ls
+   57  ls quotes
+   58  ks quotes.txt
+   59  ls quotes.txt
+   60  cp quotes.txt/quotations.txt
+   61  ls quotes.tct thesis/quotations.txt
+   62  ls quotes.txt thesis/quotations.txt
+   63  cp quotes.txt thesis/quotations.txt
+   64  ls quotes.txt thesis/quotations.txt
+   65  cp -r thesis thesis_backup
+   66  ls thesis thesis_backup
+   67  rm quotes.txt
+   68  ls quotes.txt
+   69  rm -i thesis_backup/quotations.txt
+   70  rm thesis
+   71  rm -r thesis
+   72  ls
+   73  cd /data
+   74  cd data
+   75  mkdir backup
+   76  cp amino-acids.txt animals.txt backup/
+   77  ls -F
+   78  cd ..
+   79  cd molecules
+   80  pwd
+   81  cd OneDrive/Skrivebord/data-shell/molecules/
+   82  ls molecules
+   83  ls -F
+   84  wc cubane.pdb
+   85  wc *.pdb
+   86  wc -l
+   87  cd OneDrive/Skrivebord/data-shell/molecules/
+   88  wc -l *.pdb
+   89  wc -l *.pdb > lengths.txt
+   90  ls lengths.txt
+   91  cat lengths.txt
+   92  less lengths.txt
+   93  sort -n lenghts.txt
+   94  sort -n lengths.txt
+   95  sort -n lengths.txt > sorted-lengths.txt
+   96  head -n 1 sorted-lengths.txt
+   97  echp The echo command prints text
+   98  echpo The echo command prints text
+   99  echo The echo command prints text
+  100  echo hello > testfile01.txt
+  101  echo hello >> testfile02.txt
+  102  ls testfile01.txt
+  103  cat testfile01.txt
+  104  cat testfile02.txt
+  105  cat testfile02.txt
+  106  sort -n lengths.txt | head -n 1
+  107  wc -l *.pdb | sort -n
+  108  wc -l *.pdb | sort -n | head -n 1
+  109  wc l* | sort -n | head -n 3
+  110  sort --help
+  111  cut -d, -f 2 animals.txt | sort | uniq -c | wc -l
+  112  ls -F
+  113  cd ..
+  114  cd data
+  115  cut -d, -f 2 animals.txt | sort | uniq -c | wc -l
+  116  --help l
+  117  ls -F
+  118  ..
+  119  cd ..
+  120  lcs -F
+  121  ls -F
+  122  cd creatures/
+  123  ls -F
+  124  for filename in basilisk.dat minotaur.dat unicorn.dat; do n; cd creatures/q;  ; cd creatures/q; 
+  125  for filename in basilisk.dat minotaur.dat unicorn.dat; do     head -n 2 $filename | tail -n 1; done
+  126  for filename in basilisk.dat minotaur.dat unicorn.dat; do     head -n 2 $filename; done
+  127  ls -F
+  128  ..
+  129  pwd
+  130  ..
+  131  cd ..
+  132  cd ..
+  133  ls -F
+  134  cd data-shell/
+  135  cd molecules/
+  136  for datafile in *.pdb; do        ls $datafile; done
+  137  for datafile in *.pdb; do        ls *.pdb; done
+  138  -- help echo
+  139  echo --help
+  140  -help echo
+  141  --help echo
+  142  echo --help
+  143  man echo
+  144  ..
+  145  pwd
+  146  ls -F
+  147  cd ..
+  148  ls -F
+  149  cd creatures/
+  150  ..
+  151  ls -F
+  152  cd ..
+  153  ls -f
+  154  cd molecules/
+  155  for species in cubane ethane methane; do    for temperature in 25 30 37 40
+  156  for species in cubane ethane methane
+  157  for species in cubane ethane methane; do    for temperature in 25 30 37 40;    do        echoes "mkdir $species-$temperature";    done; done
+  158  for species in cubane ethane methane; do    for temperature in 25 30 37 40;    do        echo "mkdir $species-$temperature";    done; done
+  159  for species in cubane ethane methane; do    for temperature in 25 30 37 40;    do  mkdir $species-$temperature;    done; done
+  160  pwd
+  161  nano.middle.sh
+  162  nano middle.sh
+  163  ls middle.sh
+  164  bash middle.sh
+  165  nano middle.sh
+  166  bash middle.sh
+  167  bash middle.sh octane.pdb
+  168  bash middle.sh octane.pdb pentane
+  169  nano.middle.sh
+  170  nano middle.sh
+  171  nano middle.sh
+  172  bash middle.sh pentane.pdb 15 5
+  173  bash middle.sh pentane.pdb 20 5
+  174  nano middle.sh
+  175  nano sorted.sh
+  176  bash sorted.sh *.pdb ../creatures/*.dat
+  177  ..
+  178  cd ..
+  179  cd data/animal-counts
+  180  nano species.sh
+  181  bash species.sh animals.txt
+  182  nano species.sh
+  183  bash species.sh animals.txt
+  184  hsitory | tail -n 5 > recent.sh
+  185  history | tail -n 5 > recent.sh
+  186  cd..
+  187  cd ..
+  188  ls
+  189  cd ..
+  190  ls
+  191  cd north-pacific-gyre/
+  192  cd ..
+  193  ls
+  194  cd molecules/
+  195  nano longest.sh
+  196  bash longest.sh ../tmp/data pdb
+  197  nano longest.sh
+  198  bash longest.sh ../tmp/data pdb
+  199  nano longest.sh
+  200  bash longest.sh ../tmp/data pdb
+  201  nano longest.sh
+  202  bash longest.sh ../data pdb
+  203  bash longest.sh ../data
+  204  nano longest.sh
+  205  bash longest.sh ../data pdb
+  206  nano longest.sh
+  207  bash longest.sh ../data pdb
+  208  nano longest.sh
+  209  bash longest.sh ../data .pdb
+  210  nano longest.sh
+  211  bash longest.sh ../data .pdb
+  212  wc -l ../data/*.pdb
+  213  wc ls ethane.pdb
+  214  wc -l ehtane.pdb
+  215  wc -l ethane.pdb
+  216  nano longest.sh
+  217  wc -l ethane.pdb
+  218  bash longest.sh ../data .pdb
+  219  bash longest.sh ../data pdb
+  220  nano longest.sh'
+  221  nano longest.sh
+  222  bash longest.sh ../data pdb
+  223  bash longest.sh OneDrive/Skrivebord/data-shell/data pdb
+  224  ..
+  225  nano longest.sh
+  226  cd..
+  227  cd ..
+  228  pwd
+  229  ls -F
+  230  cd ..
+  231  ls
+  232  cd data-shell/
+  233  ls
+  234  cd mo
+  235  cd molecules/
+  236  ls
+  237  cd ..
+  238  cd data/
+  239  ls
+  240  cd ..
+  241  cd north-pacific-gyre/
+  242  nano do-erros.sh
+  243  bash do-erros.sh NENE*[AB].txt
+  244  cd ..
+  245  ls
+  246  cd writing/
+  247  cat haiku.txt
+  248  greb not haiku.txt
+  249  grep not haiku.txt
+  250  greb The haiku.txt
+  251  grep haiku.txt
+  252  grep the haiku.txt
+  253  grep The haiko.txt
+  254  grep The haiku.txt
+  255  grep -w The haiku.txt
+  256  grep -w "is not" haiku.txt
+  257  grep -n "it" haiku.txt
+  258  grep -n -w "the" haiku.txt
+  259  grep -n -w- i "the" haiku.txt
+  260  grep -n -w -i "the" haiku.txt
+  261  grep -n -w -i -v "the" haiku.txt
+  262  grep --help
+  263  grep -E "^.o" haiku.txt
+  264  greb --help
+  265  grep --help
+  266  cd LitteWomen.txt
+  267  cd ..
+  268  cd ..
+  269  cd data-shell/data/LittleWomen.txt
+  270  cd data-shell/data
+  271  l
+  272  ls
+  273  cd ..
+  274  cd writing/data/LittleWomen.txt 
+  275  for text in LittleWomen.txt;   do   n; 
+  276  for text in LittleWomen.txt;   do
+  277  for count in LittleWomen.txt; do
+  278  for count in grep -w "Jo" LittleWomen.txt; do  cat 0++; done
+  279  wc --help
+  280  for word in LittleWomen.txt; do echo word; done
+  281  for word in LittleWomen.txt; do echo "$word"; done
+  282  for word in greb LittleWomen.txt; do
+  283  for word in greb LittleWomen.txt
+  284  for word in greb LittleWomen.tx
+  285  for word in greb -w -E "*" LittleWomen.txt; do echo word; done
+  286  for word in greb -w -E "*" LittleWomen.txt; do echo $word; done
+  287  for word in greb -w "Jo" LittleWomen.txt; do echo $word; done
+  288  grep --help
+  289  for sis in Jo Meg Beth Amy; do n; echo $sis:; grep -ow $sis LittleWomen.txt | wc -l; done
+  290  for sis in Jo Meg Beth Amy; do echo $sis:; grep -ow $sis LittleWomen.txt | wc -l; done
+  291  cd writing/data/
+  292  for sis in Jo Meg Beth Amy; do echo $sis:; grep -ow $sis LittleWomen.txt | wc -l; done
+  293  cd ..
+  294  find
+  295  find -type d
+  296  find .
+  297  find . -type d
+  298  find . -type f
+  299  find . -type f
+  300  find -type f
+  301  find . -type f
+  302  find . -name *.txt
+  303  find . -name "*.txt"
+  304  wc -l $(find . -name "*.txt")
+  305  wc -l $(find . -name "*.txt")
+  306  grep "FE" $(find .. -name "*.pdb")
+  307  ..
+  308  cd ..
+  309  find data -name "*s.txt" | grep -v net
+  310  grep -v "net" $(find data -name "*s.txt")
+  311  pwd
+  312  ls
+  313  cd OneDrive/Skrivebord/data-shell/HW
+  314  wc --help
+  315  wc -c | sort -n -r
+  316  wc -cr
+  317  wc -c -r
+  318  sort --help
+  319  wc -c | sort -n -r
+  320  wc -c
+  321  pwd
+  322  ls
+  323  cd OneDrive/Skrivebord/data-shell/
+  324  cd HW/
+  325  wc -l
+  326  wc -c *
+  327  pwd
+  328  cd OneDrive/Skrivebord/data-shell/HW
+  329  wc -c * | sort -n -r
+  330  wc -c * | sort -n -r | head 3
+  331  head ..help
+  332  head --help
+  333  wc -c * | sort -n -r | head -l 3
+  334  wc -c * | sort -n -r | head -l3
+  335  wc -c * | sort -n -r | head -n3
+  336  wc -c * | sort -n -r | head -n4 | tail -n3
+  337  pwd
+  338  cd OneDrive/Skrivebord/data-shell/HW/
+  339  ls
+  340  wc --help
+  341  wc -c
+  342  pwd
+  343  cd OneDrive/Skrivebord/data-shell/HW
+  344  ls
+  345  wc --help
+  346  wc -c * | sort -n -r | head 3
+  347  head --help
+  348  wc -c * | sort -n -r | head n3
+  349  pwd
+  350  cd OneDrive/Skrivebord/data-shell/HW/
+  351  ls
+  352  wc --help
+  353  wc -c * | sort -n -r
+  354  wc -c * | sort -n -r | head -n3
+  355  wc -c * | sort -n -r | head -n4 | tail -n3
+  356  history > ../assignment_w3
+  357  history > ../assignment_w3.txt
+  358  cd ..
+  359  rm assignment_w3 -i
+  360  history > assignment_w3.txt
+  361  clear
+  362  wc -c * | sort -n -r | head -n4 | tail -n3
+  363  cd HW/
+  364  wc -c * | sort -n -r | head -n4 | tail -n3
+  365  wc--
+  366  wc --help
+  367  wc -C * 
+  368  grep --help 
+  369  grep -z *
+  370  echo grep -z *
+  371  grep -z * | ls
+  372  grep -z * | wc -c
+  373  ls --help
+  374  grep -z * | ls -h
+  375  grep -z * | ls -F
+  376  grep -z * | ls -l
+  377  --find
+  378  find --help
+  379  find -size 0
+  380  find -size 0 | ls -l
+  381  cat --find . -size 0
+  382  cat find . -size 0
+  383  find . -size 0
+  384  find . -size 0 | ls -l
+  385  find . -size 0 | ls lah
+  386  find . -size 0
+  387  find . -size 0 
+  388  ls
+  389  ls -l
+  390  ls -l | grep -w "0" *
+  391  ls -l | grep -w "0" * | ls -l
+  392  ls -l | grep -w "0" *
+  393  ls -l | grep " 0 " *
+  394  ls -l | grep " 0 " * | ls -l
+  395  wc --help
+  396  wc -c | grep " 0 " *
+  397  wc -c | grep " 0 " *
+  398  wc -c | grep " 0 " * | wc -c 
+  399  cd OneDrive/Skrivebord/data-shell/HW/
+  400  wc -c | grep " 0 " * | wc -c 
+  401  wc -c | grep " 0 " *
+  402  wc -c | grep " 0 " * | wc -c
+  403  find size 0 * | wc -c
+  404  find size 0 | wc -c
+  405  find -size 0 | wc -c
+  406  find -size 0 * | wc -c
+  407  wc --help
+  408  wc -c | grep " 0 " *
+  409  wc -c | grep " 0 " * | cat
+  410  wc -c
+  411  wc -c
+  412  cd OneDrive/Skrivebord/data-shell/HW/
+  413  w -c
+  414  wc -c
+  415  wc -c
+  416  wc -c
+  417  wc -c
+  418  wc -c
+  419  wc -c
+  420  cd OneDrive/Skrivebord/data-shell/HW/
+  421  wc -c
+  422  wc -c
+  423  wc -c
+  424  pwd
+  425  cd OneDrive/Skrivebord/data-shell/HW/
+  426  wc -c
+  427  wc -c *
+  428  wc -c * | grep " 0 " * | echo
+  429  wc -c * | grep " 0 " *
+  430  wc -c * | grep " 0 " * | wc -c | sort -n
+  431  wc -c * | grep " 0 " * | wc -c *
+  432  wc -c $(grep " 0 " *)
+  433  wc -c $(find . size 0)
+  434  wc -c $(find . size 0) | sort -n
+  435  wc -c $(find . -size 0) | sort -n
+  436  wc -c $(find . -size 0)
+  437  wc -c $(find . -size 0 "*.*)
+  438  wc -c $(find . -size 0 "*.*")
+  439  wc -c $(find -size 0 "*.*")
+  440  wc -c $(find -size 0 "*.*")
+  441  wc -c $(find -size 0 "*.*") 
+  442  wc -c $(find . -size 0)
+  443  cd OneDrive/Skrivebord/data-shell/HW/
+  444  wc -c $(find . -size 0 ".*")
+  445  wc -c $(find "." -size 0 ".*")
+  446  wc -c $(find -size 0 ".*")
+  447  wc -c $(find -size 0)
+  448  wc -c $(find -size 0) | grep ".*"
+  449  wc -c $(find -size 0) | grep ".*" *
+  450  wc -c $(find -size 0) | grep -w "*.*" *
+  451  wc -c $(find -size 0) | grep "9" *
+  452  history > ../assignment2_w3.txt
+  453  mkdir goodphotos
+  454  find -size 0 -type f -printf
+  455  find -size 0 -type f -printf "."
+  456  find -size 0 -type f -printf '.'
+  457  find -size 0 -type f -printf '.' | wc -c
+  458  find -size 0 -type f
+  459  find -size 0 -type f | wc -c
+  460  wc -c $(find -size 0 -type f)
+  461  wc -c | $(find -size 0 -type f)
+  462  find -size 0 -type f | wc -c
+  463  find -size 0 -type f print f '.'
+  464  find -size 0 -type f printf '.'
+  465  find -size 0 -type f printf .
+  466  find -size 0 -type f printf . | wc -c
+  467  find -size 0 -type f | wc -l
+  468  find -size 0 -type f
+  469  find -size 0 -type f
+  470  find -size 0 -type f | wc -l
+  471  history
+  472  history > ../assignment3_w3
+  473  for file in .* do echo $file done
+  474  for file in *.* ; do echo $file; done
+  475  find -size 0 -type f | for file in * ; do mv $file goodphotos; done
+  476  for file in ./goodphotos; do  echo $file; done
+  477  for file in goodphotos; do  echo $file; done
+  478  for file in ./goodphotos/*; do  echo $file; done
+  479  for file in "./goodphotos/*"; do  echo $file; done
+  480  for file in /goodphotos/"*"; do  echo $file; done
+  481  for file in .*; do  echo $file; done
+  482  for file in ./*; do  echo $file; done
+  483  find -size 0 -type f | for file in * ; do echo $file; done
+  484  cd OneDrive/Skrivebord/data-shell/HW/
+  485  find size 0 -type f > file_zero_bytes.txt
+  486  find -size 0 -type f > file_zero_bytes.txt
+  487  find -size 0 -type f | mc -l >> file_zero_bytes.txt
+  488  find -size 0 -type f | wc -l >> file_zero_bytes.txt
+  489  find -size 0 -type f | echo antal filer >> file_zero_bytes.txt
+  490  history > assignment2_w3_correct
